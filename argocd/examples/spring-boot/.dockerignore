@@ -1,0 +1,49 @@
+# Build artifacts
+target/
+build/
+*.jar
+*.war
+*.ear
+*.class
+
+# IDE
+.idea/
+.vscode/
+.settings/
+*.iml
+.project
+.classpath
+.gradle/
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+README*
+LICENSE
+
+# Tests
+src/test/
+
+# Kubernetes & CI/CD
+k8s/
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~

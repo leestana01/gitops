@@ -1,0 +1,49 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+bases:
+  - ../../base
+
+namePrefix: prod-
+
+commonLabels:
+  environment: production
+  tier: backend
+
+replicas:
+  - name: spring-boot-app
+    count: 3
+
+patches:
+  - path: patch-resources.yaml
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: "production"
+    target:
+      kind: Deployment
+      name: spring-boot-app
+
+  - patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: "app.klr.kr"
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: "app.klr.kr"
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: "prod-spring-boot-app-tls"
+    target:
+      kind: Ingress
+      name: spring-boot-app
+
+configMapGenerator:
+  - name: spring-boot-config
+    behavior: merge
+    literals:
+      - LOGGING_LEVEL_ROOT=WARN
+      - SPRING_PROFILES_ACTIVE=production
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=when-authorized

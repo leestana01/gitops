@@ -1,0 +1,49 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spring-boot-app-prod
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: production
+
+  source:
+    repoURL: https://github.com/leestana01/gitops
+    targetRevision: main
+    path: k8s/overlays/production
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+
+  syncPolicy:
+    automated:
+      prune: false  # 프로덕션은 수동 prune
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas  # HPA가 관리하는 경우
+
+  # Notification annotations
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: "production-alerts"
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: "production-alerts"
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: "production-alerts"

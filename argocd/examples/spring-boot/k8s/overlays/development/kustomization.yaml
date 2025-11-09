@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dev
+
+bases:
+  - ../../base
+
+namePrefix: dev-
+
+commonLabels:
+  environment: development
+  tier: backend
+
+replicas:
+  - name: spring-boot-app
+    count: 1
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: "development"
+    target:
+      kind: Deployment
+      name: spring-boot-app
+
+  - patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: "dev-app.klr.kr"
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: "dev-app.klr.kr"
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: "dev-spring-boot-app-tls"
+    target:
+      kind: Ingress
+      name: spring-boot-app
+
+configMapGenerator:
+  - name: spring-boot-config
+    behavior: merge
+    literals:
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - SPRING_PROFILES_ACTIVE=dev
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
