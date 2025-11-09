@@ -59,7 +59,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/your-org/kubefiles  # Your current repository
+    repoURL: https://github.com/leestana01/gitops  # Your current repository
     targetRevision: HEAD
     path: argocd/applications
     directory:
@@ -89,7 +89,7 @@ spec:
   project: development
 
   source:
-    repoURL: https://github.com/your-org/kubefiles
+    repoURL: https://github.com/leestana01/gitops
     targetRevision: develop  # Development branch
     path: environments/development
 
@@ -112,7 +112,7 @@ spec:
   project: production
 
   source:
-    repoURL: https://github.com/your-org/kubefiles
+    repoURL: https://github.com/leestana01/gitops
     targetRevision: main  # Production branch
     path: environments/production
 

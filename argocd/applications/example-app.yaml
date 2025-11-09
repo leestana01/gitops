@@ -14,7 +14,7 @@ spec:
 
   # Source repository
   source:
-    repoURL: https://github.com/your-org/kubefiles  # Change to your repository
+    repoURL: https://github.com/leestana01/gitops  # Change to your repository
     targetRevision: HEAD
     path: argocd/examples/guestbook  # Path to Kubernetes manifests
 
@@ -57,7 +57,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/your-org/kubefiles
+    repoURL: https://github.com/leestana01/gitops
     targetRevision: HEAD
     path: argocd/examples/guestbook
 
@@ -105,7 +105,7 @@ spec:
           - $values/argocd/helm-values/nginx-ingress-values.yaml
 
     # Values file from Git repository
-    - repoURL: https://github.com/your-org/kubefiles
+    - repoURL: https://github.com/leestana01/gitops
       targetRevision: HEAD
       ref: values
 
@@ -132,7 +132,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/your-org/kubefiles
+    repoURL: https://github.com/leestana01/gitops
     targetRevision: HEAD
     path: argocd/existing-manifests
 
