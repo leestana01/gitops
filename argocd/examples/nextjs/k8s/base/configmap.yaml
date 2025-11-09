@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextjs-app-config
+  labels:
+    app: nextjs-app
+data:
+  # Runtime environment variables (server-side only)
+  # Build-time variables (NEXT_PUBLIC_*) must be set during Docker build
+
+  # API Configuration
+  API_URL: "https://api.example.com"
+
+  # Feature Flags
+  ENABLE_ANALYTICS: "false"
+  ENABLE_DEBUG: "false"
+
+  # Application Settings
+  LOG_LEVEL: "info"

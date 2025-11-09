@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextjs-app-config
+data:
+  API_URL: "https://api-dev.example.com"
+  ENABLE_DEBUG: "true"
+  LOG_LEVEL: "debug"
