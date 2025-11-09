@@ -1,0 +1,175 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argocd
+  # Finalizer to ensure proper cleanup
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for all applications
+
+  # Source repositories that applications can deploy from
+  sourceRepos:
+    - '*'  # Allow all repositories (change in production)
+
+  # Destination clusters and namespaces
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc  # In-cluster
+    - namespace: '*'
+      server: '*'  # Allow all clusters (change in production)
+
+  # Cluster resource whitelist (what can be deployed)
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Namespace resource whitelist
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Roles for RBAC within this project
+  roles:
+    - name: developer
+      description: Developer role with read and sync permissions
+      policies:
+        - p, proj:default:developer, applications, get, default/*, allow
+        - p, proj:default:developer, applications, sync, default/*, allow
+      groups:
+        - developers
+
+    - name: readonly
+      description: Read-only access
+      policies:
+        - p, proj:default:readonly, applications, get, default/*, allow
+      groups:
+        - viewers
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: production
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Production project with strict controls
+
+  # Only allow specific repositories
+  sourceRepos:
+    - https://github.com/your-org/production-configs
+
+  # Only production namespaces
+  destinations:
+    - namespace: production
+      server: https://kubernetes.default.svc
+    - namespace: prod-*
+      server: https://kubernetes.default.svc
+
+  # Restrict cluster resources
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: ''
+      kind: ResourceQuota
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+
+  # Only allow specific resource types
+  namespaceResourceWhitelist:
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: apps
+      kind: Deployment
+    - group: apps
+      kind: StatefulSet
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+
+  # Orphaned resources handling
+  orphanedResources:
+    warn: true
+
+  # Sync windows (when sync is allowed)
+  syncWindows:
+    - kind: allow
+      schedule: '0 9-17 * * 1-5'  # Mon-Fri 9AM-5PM
+      duration: 8h
+      applications:
+        - '*'
+      manualSync: true
+    - kind: deny
+      schedule: '0 0-6 * * *'  # Midnight to 6AM
+      duration: 6h
+      applications:
+        - '*'
+
+  roles:
+    - name: prod-admin
+      description: Production administrator
+      policies:
+        - p, proj:production:prod-admin, applications, *, production/*, allow
+      groups:
+        - prod-admins
+
+    - name: prod-deployer
+      description: Production deployer (sync only)
+      policies:
+        - p, proj:production:prod-deployer, applications, get, production/*, allow
+        - p, proj:production:prod-deployer, applications, sync, production/*, allow
+      groups:
+        - prod-deployers
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: development
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Development project with relaxed controls
+
+  sourceRepos:
+    - '*'
+
+  destinations:
+    - namespace: dev-*
+      server: https://kubernetes.default.svc
+    - namespace: development
+      server: https://kubernetes.default.svc
+    - namespace: staging
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  orphanedResources:
+    warn: false
+
+  roles:
+    - name: dev-full
+      description: Full development access
+      policies:
+        - p, proj:development:dev-full, applications, *, development/*, allow
+      groups:
+        - developers
+        - dev-team

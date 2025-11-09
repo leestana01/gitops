@@ -1,0 +1,304 @@
+---
+# Helm Chart from Repository
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+
+  source:
+    # Helm repository
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 54.0.0  # Specific version
+
+    # Helm values
+    helm:
+      # Inline values
+      values: |
+        prometheus:
+          prometheusSpec:
+            retention: 30d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 50Gi
+
+        grafana:
+          enabled: true
+          adminPassword: changeme
+          ingress:
+            enabled: true
+            hosts:
+              - grafana.klr.kr
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+
+        alertmanager:
+          enabled: true
+
+      # Parameters (alternative to values)
+      parameters:
+        - name: prometheus.prometheusSpec.retention
+          value: "30d"
+        - name: grafana.adminPassword
+          value: changeme
+
+      # Values from files
+      # valueFiles:
+      #   - values-production.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true  # Recommended for Helm charts
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+
+---
+# Helm Chart from Git Repository
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: custom-app
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/helm-charts
+    targetRevision: main
+    path: charts/custom-app  # Path to chart directory
+
+    helm:
+      # Release name
+      releaseName: my-custom-app
+
+      # Values files from the same repo
+      valueFiles:
+        - values.yaml
+        - values-production.yaml
+
+      # Skip CRDs (if they're already installed)
+      skipCrds: false
+
+      # Pass values to Helm
+      values: |
+        replicaCount: 3
+        image:
+          repository: myregistry.io/custom-app
+          tag: v1.2.3
+        ingress:
+          enabled: true
+          hosts:
+            - host: app.klr.kr
+              paths:
+                - path: /
+                  pathType: Prefix
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: custom-app
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+---
+# Bitnami Helm Chart Example
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: redis
+    targetRevision: 18.4.0
+
+    helm:
+      values: |
+        architecture: standalone
+        auth:
+          enabled: true
+          password: "redis-password"
+
+        master:
+          persistence:
+            enabled: true
+            size: 8Gi
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 128Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# PostgreSQL with Secret Management
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgresql
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: 13.2.24
+
+    helm:
+      # Using parameters instead of values for sensitive data
+      parameters:
+        - name: auth.postgresPassword
+          value: $POSTGRES_PASSWORD  # Use with external secrets
+        - name: auth.database
+          value: myapp
+        - name: primary.persistence.size
+          value: 20Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: database
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false  # Careful with databases
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      jsonPointers:
+        - /spec/volumeClaimTemplates
+
+---
+# Cert-Manager Installation
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"  # Install early
+spec:
+  project: default
+
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.13.3
+
+    helm:
+      values: |
+        installCRDs: true
+        global:
+          leaderElection:
+            namespace: cert-manager
+
+        prometheus:
+          enabled: true
+          servicemonitor:
+            enabled: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+
+---
+# ArgoCD Image Updater (for automatic image updates)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-image-updater
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argocd-image-updater
+    targetRevision: 0.9.1
+
+    helm:
+      values: |
+        config:
+          argocd:
+            grpcWeb: true
+            serverAddress: https://argocd.klr.kr
+            insecure: false
+            plaintext: false
+
+        # Git credentials for writing back image updates
+        # authScripts:
+        #   enabled: true
+        #   scripts:
+        #     git-credentials.sh: |
+        #       #!/bin/sh
+        #       echo "username=${GIT_USERNAME}"
+        #       echo "password=${GIT_PASSWORD}"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

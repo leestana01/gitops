@@ -1,0 +1,38 @@
+# ArgoCD Installation Manifest
+# Version: v2.9.3 (stable)
+# This uses the official ArgoCD installation manifest
+
+# You can install ArgoCD using this command:
+# kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Or use this file directly with the official manifest embedded below:
+
+---
+# Custom resource definitions first
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+
+---
+# NOTE: For production deployment, use the official manifest:
+# kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.9.3/manifests/install.yaml
+
+# This file serves as a reference. For actual installation, please run:
+#
+# kubectl create namespace argocd
+# kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+#
+# The official manifest includes:
+# - ArgoCD Server (UI and API)
+# - ArgoCD Application Controller
+# - ArgoCD Repo Server
+# - ArgoCD Redis (for caching)
+# - ArgoCD Dex Server (SSO)
+# - ArgoCD Notifications Controller
+# - Required CRDs (Application, AppProject, ApplicationSet)
+# - RBAC configurations
+# - Services and Deployments
+
+---
+# After installation, apply the custom ConfigMap for additional settings

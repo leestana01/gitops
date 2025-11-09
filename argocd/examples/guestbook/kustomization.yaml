@@ -1,0 +1,82 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Metadata
+namespace: guestbook
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: guestbook
+  app.kubernetes.io/managed-by: argocd
+  app.kubernetes.io/part-of: guestbook-application
+
+# Common annotations
+commonAnnotations:
+  managed-by: argocd
+  contact: devops@klr.kr
+
+# Resources to include
+resources:
+  - deployment.yaml
+  - service.yaml
+
+# ConfigMap generator (example)
+configMapGenerator:
+  - name: guestbook-config
+    literals:
+      - APP_NAME=guestbook
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+
+# Secret generator (example - use external secrets in production)
+secretGenerator:
+  - name: guestbook-secrets
+    literals:
+      - DB_PASSWORD=changeme  # Don't use this in production!
+
+# Images (for version management)
+images:
+  - name: gcr.io/heptio-images/ks-guestbook-demo
+    newTag: "0.2"
+
+# Replicas (can be overridden per environment)
+replicas:
+  - name: guestbook-ui
+    count: 3
+  - name: guestbook-api
+    count: 2
+
+# Patches (example for resource limits)
+patches:
+  - target:
+      kind: Deployment
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+
+# Name prefix/suffix for resources
+# namePrefix: dev-
+# nameSuffix: -v1
+
+# Labels to add to all resources
+# labels:
+#   - pairs:
+#       environment: production
+#       team: platform
+
+---
+# Kustomization for different environments can be in separate overlays:
+# base/
+#   ├── kustomization.yaml
+#   ├── deployment.yaml
+#   └── service.yaml
+# overlays/
+#   ├── development/
+#   │   └── kustomization.yaml
+#   ├── staging/
+#   │   └── kustomization.yaml
+#   └── production/
+#       └── kustomization.yaml

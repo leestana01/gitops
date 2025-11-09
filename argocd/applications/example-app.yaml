@@ -1,0 +1,200 @@
+---
+# Simple Kubernetes Manifest Application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"  # Deploy in wave 1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # Source repository
+  source:
+    repoURL: https://github.com/your-org/kubefiles  # Change to your repository
+    targetRevision: HEAD
+    path: argocd/examples/guestbook  # Path to Kubernetes manifests
+
+  # Destination
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: guestbook
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        maxDuration: 3m
+        factor: 2
+
+  # Health assessment
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+
+---
+# Kustomize-based Application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kustomize-app
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/kubefiles
+    targetRevision: HEAD
+    path: argocd/examples/guestbook
+
+    # Kustomize options
+    kustomize:
+      namePrefix: dev-
+      nameSuffix: -v1
+      commonLabels:
+        environment: development
+        managed-by: argocd
+      images:
+        - nginx:1.25.3
+      replicas:
+        - name: guestbook-ui
+          count: 3
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: development
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# Multi-source Application (Helm + Values from Git)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ingress
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    # Helm chart from repository
+    - repoURL: https://kubernetes.github.io/ingress-nginx
+      chart: ingress-nginx
+      targetRevision: 4.8.3
+      helm:
+        valueFiles:
+          - $values/argocd/helm-values/nginx-ingress-values.yaml
+
+    # Values file from Git repository
+    - repoURL: https://github.com/your-org/kubefiles
+      targetRevision: HEAD
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ingress-nginx
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+---
+# External Application (monitoring existing resources)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: existing-resources
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/kubefiles
+    targetRevision: HEAD
+    path: argocd/existing-manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    # No automated sync - manual only
+    syncOptions:
+      - CreateNamespace=false
+      - Validate=true
+      - RespectIgnoreDifferences=true
+
+  # Only monitor, don't manage
+  syncPolicy:
+    automated: null  # Disabled automated sync
+
+---
+# Progressive Sync Application (with waves)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: microservices-app
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/microservices
+    targetRevision: HEAD
+    path: k8s/overlays/production
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: microservices
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true  # Only apply out-of-sync resources
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Sync waves via annotations in manifests:
+  # argocd.argoproj.io/sync-wave: "0"  # Database
+  # argocd.argoproj.io/sync-wave: "1"  # Backend
+  # argocd.argoproj.io/sync-wave: "2"  # Frontend
+
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: apps
+      kind: StatefulSet
+      jsonPointers:
+        - /spec/volumeClaimTemplates

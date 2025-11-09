@@ -1,0 +1,128 @@
+---
+# App of Apps Pattern
+# This is the parent application that manages all child applications
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+  # Cascade deletion - when parent is deleted, all children are deleted
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # Source repository for application definitions
+  source:
+    repoURL: https://github.com/your-org/argocd-apps  # Change this to your repository
+    targetRevision: HEAD
+    path: applications  # Path where application YAML files are stored
+
+  # Destination cluster
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: true      # Automatically delete resources when removed from Git
+      selfHeal: true   # Automatically sync when cluster state differs from Git
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true  # Auto-create namespaces if they don't exist
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Ignore certain differences
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas  # Ignore replica count (for HPA)
+
+---
+# Alternative: Self-referencing app-of-apps
+# This version references the current repository's applications folder
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-apps
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"  # Deploy first
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/kubefiles  # Your current repository
+    targetRevision: HEAD
+    path: argocd/applications
+    directory:
+      recurse: true  # Recursively search for application manifests
+      exclude: 'app-of-apps.yaml'  # Don't include self
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true  # Prune resources as last step
+
+---
+# Example: Multi-environment app-of-apps
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: development-apps
+  namespace: argocd
+spec:
+  project: development
+
+  source:
+    repoURL: https://github.com/your-org/kubefiles
+    targetRevision: develop  # Development branch
+    path: environments/development
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: production-apps
+  namespace: argocd
+spec:
+  project: production
+
+  source:
+    repoURL: https://github.com/your-org/kubefiles
+    targetRevision: main  # Production branch
+    path: environments/production
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: false  # Manual prune in production
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
