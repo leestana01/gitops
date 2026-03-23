@@ -15,6 +15,24 @@ spec:
       labels:
         app: snappymail
     spec:
+      initContainers:
+        - name: init-domain-config
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              DOMAIN_DIR="/data/_data_/_default_/domains"
+              mkdir -p "$DOMAIN_DIR"
+              cp /domain-config/klr.kr.json "$DOMAIN_DIR/klr.kr.json"
+              chown -R 82:82 /data/_data_
+              echo "Domain config injected"
+          volumeMounts:
+            - name: snappymail-data
+              mountPath: /data
+              subPath: snappymail
+            - name: domain-config
+              mountPath: /domain-config
       containers:
         - name: snappymail
           image: docker.io/djmaze/snappymail:latest
@@ -36,3 +54,6 @@ spec:
         - name: snappymail-data
           persistentVolumeClaim:
             claimName: mail-nfs
+        - name: domain-config
+          configMap:
+            name: snappymail-domain-config
