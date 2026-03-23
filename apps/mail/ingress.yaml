@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mail-server
+  namespace: mail
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mail.klr.kr
+      secretName: mail-klr-kr-tls
+  rules:
+    - host: mail.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mail-server
+                port:
+                  number: 8080

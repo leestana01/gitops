@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mail-config
+  namespace: mail
+data:
+  # OCI Email Delivery relay configuration
+  # Stalwart will be configured via web UI after initial deployment
+  # SMTP relay settings for OCI:
+  RELAY_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
+  RELAY_PORT: "587"
+  RELAY_TLS: "starttls"
+  # Credentials will be configured via web UI
+  # SMTP relay username and password should be set in Stalwart admin panel
+  # under Settings > SMTP > Outbound > Relay

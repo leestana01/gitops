@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-server
+  namespace: mail
+  labels:
+    app: mail-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mail-server
+  template:
+    metadata:
+      labels:
+        app: mail-server
+    spec:
+      containers:
+        - name: mail-server
+          image: docker.io/stalwartlabs/mail-server:v0.11.6
+          ports:
+            - containerPort: 25
+              name: smtp
+            - containerPort: 587
+              name: submission
+            - containerPort: 993
+              name: imaps
+            - containerPort: 443
+              name: https
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: mail-data
+              mountPath: /opt/stalwart-mail
+              subPath: mail
+          env:
+            - name: STALWART_HOSTNAME
+              value: "mail.klr.kr"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: mail-data
+          persistentVolumeClaim:
+            claimName: mail-nfs
