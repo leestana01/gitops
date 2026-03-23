@@ -8,6 +8,9 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nolock
+    - nfsvers=3
   nfs:
     server: 10.96.78.207
     path: /shared
