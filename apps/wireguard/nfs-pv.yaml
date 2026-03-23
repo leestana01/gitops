@@ -10,4 +10,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 10.0.30.45
-    path: /shared/wireguard
+    path: /shared

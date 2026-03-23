@@ -39,6 +39,7 @@ spec:
           volumeMounts:
             - name: wg-data
               mountPath: /etc/wireguard
+              subPath: wireguard
           securityContext:
             capabilities:
               add:
