@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server
+  namespace: default
+  labels:
+    app: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-server
+    spec:
+      containers:
+        - name: nfs-server
+          image: docker.io/alpine:3.19
+          ports:
+            - containerPort: 2049
+              name: nfs
+            - containerPort: 111
+              name: rpcbind
+            - containerPort: 32765
+              name: mountd
+            - containerPort: 32767
+              name: statd
+          securityContext:
+            privileged: true
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              apk add --no-cache nfs-utils
+              mkdir -p /shared /run/nfs /var/lib/nfs/sm /var/lib/nfs/sm.bak /var/lib/nfs/v4recovery
+              echo "/shared *(rw,no_subtree_check,no_root_squash,sync)" > /etc/exports
+              rpcbind -w
+              exportfs -arv
+              rpc.statd --port 32767 --no-notify
+              rpc.nfsd -d 8 2 || rpc.nfsd 2 || true
+              rpc.mountd --port 32765 --foreground --no-nfs-version 4
+          volumeMounts:
+            - name: nfs-data
+              mountPath: /shared
+      volumes:
+        - name: nfs-data
+          persistentVolumeClaim:
+            claimName: nfs-server-data
