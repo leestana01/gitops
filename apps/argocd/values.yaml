@@ -1,0 +1,20 @@
+global:
+  domain: argocd.klr.kr
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24"
+    hostname: argocd.klr.kr
+    tls: true
+    extraTls:
+      - secretName: argocd-klr-kr-tls
+        hosts:
+          - argocd.klr.kr
+
+configs:
+  params:
+    server.insecure: true
