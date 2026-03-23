@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mail-server
-          image: docker.io/stalwartlabs/mail-server:v0.11.6
+          image: docker.io/stalwartlabs/stalwart:v0.15.5
           ports:
             - containerPort: 25
               name: smtp
