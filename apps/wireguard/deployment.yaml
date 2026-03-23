@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wg-easy
+  namespace: wireguard
+  labels:
+    app: wg-easy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wg-easy
+  template:
+    metadata:
+      labels:
+        app: wg-easy
+    spec:
+      containers:
+        - name: wg-easy
+          image: ghcr.io/wg-easy/wg-easy:latest
+          ports:
+            - containerPort: 51820
+              protocol: UDP
+              name: wireguard
+            - containerPort: 51821
+              protocol: TCP
+              name: web-ui
+          env:
+            - name: WG_HOST
+              value: "vpn.klr.kr"
+            - name: PASSWORD_HASH
+              value: "$2a$12$zJmUD9eRpnh4uLoTGKViZOyNyJZeMqKnBOA8cWIJTOl.aCmUNfsYa"
+            - name: WG_DEFAULT_DNS
+              value: "1.1.1.1,8.8.8.8"
+            - name: WG_ALLOWED_IPS
+              value: "10.0.10.0/24,10.13.13.0/24"
+            - name: LANG
+              value: "en"
+          volumeMounts:
+            - name: wg-data
+              mountPath: /etc/wireguard
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - SYS_MODULE
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: wg-data
+          persistentVolumeClaim:
+            claimName: wireguard-nfs
