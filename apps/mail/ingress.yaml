@@ -10,10 +10,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - mail.klr.kr
-      secretName: mail-klr-kr-tls
+        - webmail.klr.kr
+      secretName: webmail-klr-kr-tls
   rules:
-    - host: mail.klr.kr
+    - host: webmail.klr.kr
       http:
         paths:
           - path: /
