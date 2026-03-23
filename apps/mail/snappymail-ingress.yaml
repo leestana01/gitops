@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mail-server
+  name: snappymail
   namespace: mail
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -9,16 +9,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - admin.mail.klr.kr
-      secretName: admin-mail-klr-kr-tls
+        - webmail.klr.kr
+      secretName: webmail-klr-kr-tls
   rules:
-    - host: admin.mail.klr.kr
+    - host: webmail.klr.kr
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: mail-server
+                name: snappymail
                 port:
-                  number: 8080
+                  number: 8888

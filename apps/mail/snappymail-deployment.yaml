@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snappymail
+  namespace: mail
+  labels:
+    app: snappymail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: snappymail
+  template:
+    metadata:
+      labels:
+        app: snappymail
+    spec:
+      containers:
+        - name: snappymail
+          image: docker.io/djmaze/snappymail:latest
+          ports:
+            - containerPort: 8888
+              name: http
+          volumeMounts:
+            - name: snappymail-data
+              mountPath: /var/lib/snappymail
+              subPath: snappymail
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+      volumes:
+        - name: snappymail-data
+          persistentVolumeClaim:
+            claimName: mail-nfs
