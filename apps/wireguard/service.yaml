@@ -5,6 +5,7 @@ metadata:
   namespace: wireguard
   annotations:
     oci.oraclecloud.com/load-balancer-type: "nlb"
+    oci.oraclecloud.com/reserved-ips: "158.180.64.79"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

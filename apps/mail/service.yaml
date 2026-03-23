@@ -19,6 +19,7 @@ metadata:
   namespace: mail
   annotations:
     oci.oraclecloud.com/load-balancer-type: "nlb"
+    oci.oraclecloud.com/reserved-ips: "168.107.11.228"
 spec:
   type: LoadBalancer
   selector:
