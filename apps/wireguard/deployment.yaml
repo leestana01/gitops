@@ -29,7 +29,10 @@ spec:
             - name: WG_HOST
               value: "vpn.klr.kr"
             - name: PASSWORD_HASH
-              value: "$2a$12$zJmUD9eRpnh4uLoTGKViZOyNyJZeMqKnBOA8cWIJTOl.aCmUNfsYa"
+              valueFrom:
+                secretKeyRef:
+                  name: wireguard-secret
+                  key: password-hash
             - name: WG_DEFAULT_DNS
               value: "1.1.1.1,8.8.8.8"
             - name: WG_ALLOWED_IPS

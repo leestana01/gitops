@@ -1,0 +1,3 @@
+# Kubernetes secret files - never commit
+*-secret.yaml
+secrets/
