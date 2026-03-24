@@ -36,7 +36,7 @@ spec:
             - name: WG_DEFAULT_DNS
               value: "1.1.1.1,8.8.8.8"
             - name: WG_ALLOWED_IPS
-              value: "10.0.10.0/24,10.13.13.0/24"
+              value: "10.0.10.0/24,10.13.13.0/24,168.107.21.215/32"
             - name: LANG
               value: "en"
           volumeMounts:
