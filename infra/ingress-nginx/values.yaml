@@ -1,4 +1,9 @@
 controller:
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    proxy-real-ip-cidr: "10.0.20.0/24"
+    use-proxy-protocol: "true"
   service:
     annotations:
       oci.oraclecloud.com/load-balancer-type: "lb"
@@ -6,6 +11,7 @@ controller:
       service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
       service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
       service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
+      service.beta.kubernetes.io/oci-load-balancer-connection-proxy-protocol-version: "2"
     externalTrafficPolicy: Local
   admissionWebhooks:
     enabled: false
