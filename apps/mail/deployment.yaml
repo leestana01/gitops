@@ -33,6 +33,9 @@ spec:
             - name: mail-data
               mountPath: /opt/stalwart
               subPath: stalwart
+            - name: tls-cert
+              mountPath: /opt/stalwart/tls
+              readOnly: true
           env:
             - name: STALWART_HOSTNAME
               value: "mail.klr.kr"
@@ -47,3 +50,6 @@ spec:
         - name: mail-data
           persistentVolumeClaim:
             claimName: mail-nfs
+        - name: tls-cert
+          secret:
+            secretName: webmail-klr-kr-tls
