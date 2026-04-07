@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gakhalmo-front
+  name: gakhalmo-back
   namespace: argocd
 spec:
   project: default
 
   source:
     repoURL: https://github.com/leestana01/gitops.git
-    targetRevision: develop
-    path: apps/gakhalmo-front
+    targetRevision: main
+    path: apps/gakhalmo-back/base
 
   destination:
     server: https://kubernetes.default.svc
