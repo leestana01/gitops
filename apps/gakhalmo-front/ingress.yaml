@@ -10,10 +10,54 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
+        - gak-h-almo.klr.kr
         - gakhalmo.klr.kr
-      secretName: gakhalmo-klr-kr-tls
+        - gakalmo.klr.kr
+        - xn--p39ax1zj9t.klr.kr
+        - xn--p39a7hs6nmljkwq7bt58k1b.klr.kr
+      secretName: gakhalmo-front-tls
   rules:
+    - host: gak-h-almo.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gakhalmo-front
+                port:
+                  number: 3000
     - host: gakhalmo.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gakhalmo-front
+                port:
+                  number: 3000
+    - host: gakalmo.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gakhalmo-front
+                port:
+                  number: 3000
+    - host: xn--p39ax1zj9t.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gakhalmo-front
+                port:
+                  number: 3000
+    - host: xn--p39a7hs6nmljkwq7bt58k1b.klr.kr
       http:
         paths:
           - path: /
