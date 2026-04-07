@@ -27,16 +27,16 @@ spec:
               name: web-ui
           env:
             - name: WG_HOST
-              value: "vpn.klr.kr"
+              value: "158.180.64.79"
             - name: PASSWORD_HASH
               valueFrom:
                 secretKeyRef:
                   name: wireguard-secret
                   key: password-hash
             - name: WG_DEFAULT_DNS
-              value: "1.1.1.1,8.8.8.8"
+              value: "10.96.5.5,1.1.1.1"
             - name: WG_ALLOWED_IPS
-              value: "10.0.10.0/24,10.13.13.0/24,168.107.21.215/32"
+              value: "10.0.100.0/24,10.0.80.0/20,10.13.13.0/24,10.96.0.0/16"
             - name: LANG
               value: "en"
           volumeMounts:

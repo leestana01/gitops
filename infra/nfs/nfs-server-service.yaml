@@ -4,6 +4,7 @@ metadata:
   name: nfs-server
   namespace: default
 spec:
+  clusterIP: 10.96.78.207
   selector:
     app: nfs-server
   ports:

@@ -7,7 +7,7 @@ server:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
-      nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24,10.13.13.0/24"
+      nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24,10.0.100.0/24,10.13.13.0/24,10.8.0.0/24"
     hostname: argocd.klr.kr
     tls: true
     extraTls:
