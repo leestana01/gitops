@@ -1,11 +1,8 @@
 controller:
   service:
     annotations:
-      oci.oraclecloud.com/load-balancer-type: "lb"
-      service.beta.kubernetes.io/oci-load-balancer-subnet1: "ocid1.subnet.oc1.ap-chuncheon-1.aaaaaaaafzd46zbvuwujq2snymzafgpvwirvmzptikor6tfvfgn72bvwfrba"
-      service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
+      oci.oraclecloud.com/load-balancer-type: "nlb"
+      oci.oraclecloud.com/reserved-ips: "140.245.76.158"
     externalTrafficPolicy: Local
   admissionWebhooks:
     enabled: false
