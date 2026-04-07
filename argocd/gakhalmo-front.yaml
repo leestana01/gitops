@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gakhalmo-front
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/leestana01/gitops.git
+    targetRevision: main
+    path: apps/gakhalmo-front
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gakhalmo
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
