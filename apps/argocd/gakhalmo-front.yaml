@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/leestana01/gitops.git
     targetRevision: main
-    path: apps/gakhalmo-front/base
+    path: apps/gakhalmo-front/overlays/prod
 
   destination:
     server: https://kubernetes.default.svc

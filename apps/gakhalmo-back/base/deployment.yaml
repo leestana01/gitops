@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gakhalmo-back
-  namespace: gakhalmo
   labels:
     app: gakhalmo-back
 spec:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gakhalmo-back
-          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/back:prod-4
+          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/back
           ports:
             - containerPort: 8000
               name: http

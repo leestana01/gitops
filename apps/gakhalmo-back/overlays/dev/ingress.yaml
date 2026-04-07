@@ -1,8 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gakhalmo-front-dev
-  namespace: gakhalmo-dev
+  name: gakhalmo-back
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
@@ -10,16 +9,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - dev.gakhalmo.klr.kr
-      secretName: dev-gakhalmo-klr-kr-tls
+        - api.dev.gakhalmo.klr.kr
+      secretName: api-dev-gakhalmo-klr-kr-tls
   rules:
-    - host: dev.gakhalmo.klr.kr
+    - host: api.dev.gakhalmo.klr.kr
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: gakhalmo-front-dev
+                name: gakhalmo-back
                 port:
-                  number: 3000
+                  number: 8000

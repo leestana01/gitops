@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gakhalmo-front
-  namespace: gakhalmo
   labels:
     app: gakhalmo-front
 spec:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gakhalmo-front
-          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/front:prod-1
+          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/front
           ports:
             - containerPort: 3000
               name: http
