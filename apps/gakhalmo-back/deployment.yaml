@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gakhalmo-back
-          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/back:prod-1
+          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/back:prod-4
           ports:
             - containerPort: 8000
               name: http
