@@ -18,6 +18,8 @@ spec:
       securityContext:
         fsGroup: 1000
         runAsUser: 1000
+      imagePullSecrets:
+        - name: oci-registry-secret
       initContainers:
         - name: init-jenkins-home
           image: busybox:latest
@@ -30,7 +32,8 @@ spec:
             runAsUser: 0
       containers:
         - name: jenkins
-          image: docker.io/jenkins/jenkins:lts-jdk17
+          image: yny.ocir.io/axlgn2n9ijoa/jenkins:2.555.1-jdk21
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
@@ -38,29 +41,33 @@ spec:
               name: agent
           env:
             - name: JAVA_OPTS
-              value: "-Xmx512m -Xms256m"
+              value: "-Xmx1024m -Xms512m -Djenkins.install.runSetupWizard=false -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/jenkins_home/heapdump.hprof"
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home
               subPath: jenkins
           resources:
             requests:
-              memory: "512Mi"
+              memory: "768Mi"
               cpu: "250m"
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: "1536Mi"
+              cpu: "1500m"
+          startupProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 60
           livenessProbe:
             httpGet:
               path: /login
               port: 8080
-            initialDelaySeconds: 120
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /login
               port: 8080
-            initialDelaySeconds: 60
             periodSeconds: 5
       volumes:
         - name: jenkins-data
