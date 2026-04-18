@@ -1,3 +1,6 @@
 # Kubernetes secret files - never commit
 *-secret.yaml
 secrets/
+
+# Claude Code agent artifacts
+.claude/
