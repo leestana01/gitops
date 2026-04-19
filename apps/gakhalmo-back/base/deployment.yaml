@@ -20,6 +20,13 @@ spec:
           ports:
             - containerPort: 8000
               name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). nameSuffix 가 붙은 경우 자동 rewrite.
+            - configMapRef:
+                name: gakhalmo-back-config
+            # 시크릿 env (SealedSecret 혹은 ESO 가 생성, overlay 별 네임스페이스).
+            - secretRef:
+                name: gakhalmo-back-secrets
           resources:
             requests:
               cpu: "100m"
