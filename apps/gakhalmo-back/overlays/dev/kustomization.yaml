@@ -9,4 +9,4 @@ namespace: gakhalmo-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/gakhalmo/back
-    newTag: dev-18
+    newTag: dev-19
