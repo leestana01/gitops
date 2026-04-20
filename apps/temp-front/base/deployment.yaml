@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temp-front
+  labels:
+    app: temp-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temp-front
+  template:
+    metadata:
+      labels:
+        app: temp-front
+    spec:
+      containers:
+        - name: temp-front
+          image: yny.ocir.io/axlgn2n9ijoa/gakhalmo/front-test
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: ocir-secret
