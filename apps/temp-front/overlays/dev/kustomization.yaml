@@ -7,4 +7,4 @@ namespace: gakhalmo-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/gakhalmo/front-test
-    newTag: dev-3
+    newTag: dev-4
