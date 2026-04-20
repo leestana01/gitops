@@ -60,7 +60,7 @@ notifications:
                   {"name": "Namespace", "value": "{{.app.spec.destination.namespace}}", "inline": true},
                   {"name": "Sync",      "value": "{{.app.status.sync.status}}",         "inline": true},
                   {"name": "Health",    "value": "{{.app.status.health.status}}",       "inline": true},
-                  {"name": "Revision",  "value": "{{.app.status.sync.revision | printf \"%.7s\"}}", "inline": true},
+                  {"name": "Revision",  "value": "{{printf `%.7s` .app.status.sync.revision}}", "inline": true},
                   {"name": "Path",      "value": "{{.app.spec.source.path}}",           "inline": true}
                 ]
               }]
@@ -83,7 +83,7 @@ notifications:
                 "fields": [
                   {"name": "Namespace", "value": "{{.app.spec.destination.namespace}}",  "inline": true},
                   {"name": "Phase",     "value": "{{.app.status.operationState.phase}}", "inline": true},
-                  {"name": "Revision",  "value": "{{.app.status.sync.revision | printf \"%.7s\"}}", "inline": true},
+                  {"name": "Revision",  "value": "{{printf `%.7s` .app.status.sync.revision}}", "inline": true},
                   {"name": "Message",   "value": {{toJson .app.status.operationState.message}}, "inline": false}
                 ]
               }]
