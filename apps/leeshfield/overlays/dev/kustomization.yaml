@@ -4,7 +4,6 @@ resources:
   - ../../base
   - ingress.yaml
   - configmap.yaml
-  - mysql.yaml
 namespace: leeshfield-dev
 nameSuffix: -dev
 images:
