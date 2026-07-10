@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leeshfield
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # 대용량 자산 업로드(영상 500MB 한도) — 서버 경유 업로드 방식(D-021)
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - leeshfield.klr.kr
+      secretName: leeshfield-klr-kr-tls
+  rules:
+    - host: leeshfield.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: leeshfield
+                port:
+                  number: 3000

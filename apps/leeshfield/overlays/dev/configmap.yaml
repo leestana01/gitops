@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: leeshfield-config
+data:
+  AUTH_URL: "https://dev.leeshfield.klr.kr"
+  OCI_S3_ENDPOINT: "https://axlgn2n9ijoa.compat.objectstorage.ap-chuncheon-1.oraclecloud.com"
+  OCI_S3_REGION: "ap-chuncheon-1"
+  OCI_S3_BUCKET: "leestana01"
+  SEEDANCE_PROVIDER: "mock"
+  SMTP_FROM: "noreply@leeshfield.klr.kr"
