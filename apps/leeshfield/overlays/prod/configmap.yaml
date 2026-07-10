@@ -9,4 +9,7 @@ data:
   OCI_S3_BUCKET: "leestana01"
   # 실 Volcengine 키 확보 전까지 Mock Provider (docs/DECISIONS.md D-004)
   SEEDANCE_PROVIDER: "mock"
-  SMTP_FROM: "noreply@leeshfield.klr.kr"
+  # 이메일 발송 — OCI Email Delivery 직접 릴레이 (승인 발신자 no-reply@klr.kr)
+  SMTP_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
+  SMTP_PORT: "587"
+  SMTP_FROM: "no-reply@klr.kr"
