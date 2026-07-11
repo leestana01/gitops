@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: travelfood-db
-          image: postgres:16-alpine
+          image: docker.io/library/postgres:16-alpine
           ports:
             - containerPort: 5432
               name: postgres
