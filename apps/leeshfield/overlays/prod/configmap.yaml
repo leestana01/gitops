@@ -7,9 +7,10 @@ data:
   OCI_S3_ENDPOINT: "https://axlgn2n9ijoa.compat.objectstorage.ap-chuncheon-1.oraclecloud.com"
   OCI_S3_REGION: "ap-chuncheon-1"
   OCI_S3_BUCKET: "leestana01"
-  # ModelArk 일시 중단 → mock (D-043). 사유: Ark 콘솔에서 모델 미활성화(ModelNotOpen/404).
-  # 모델 활성화 + 재시도 루프 버그 수정 후 modelark로 재전환. ARK_* 는 inert(mock이 미사용).
-  SEEDANCE_PROVIDER: "mock"
+  # 실 BytePlus ModelArk(해외판) 연동 (D-043). ARK_API_KEY는 secret.
+  # 실 생성은 Ark 콘솔에서 해당 모델 활성화(개통) 후 동작. 미활성 시 submit이 즉시
+  # 실패·환불(재시도 상한 SUBMIT_MAX_ATTEMPTS로 무한루프 방지, prod-7+).
+  SEEDANCE_PROVIDER: "modelark"
   ARK_BASE_URL: "https://ark.ap-southeast.bytepluses.com/api/v3"
   ARK_MODEL_ID: "dreamina-seedance-2-0-260128"
   ARK_MODEL_ID_FAST: "dreamina-seedance-2-0-fast-260128"
