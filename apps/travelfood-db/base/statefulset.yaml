@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: travelfood-db
+  labels:
+    app: travelfood-db
+spec:
+  replicas: 1
+  serviceName: travelfood-db
+  selector:
+    matchLabels:
+      app: travelfood-db
+  template:
+    metadata:
+      labels:
+        app: travelfood-db
+    spec:
+      containers:
+        - name: travelfood-db
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: "travelfood"
+            - name: POSTGRES_USER
+              value: "travelfood"
+            # 비밀번호는 매니페스트에 두지 않는다 — 네임스페이스별로 수동 생성한 시크릿에서 주입.
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: travelfood-db-secrets
+                  key: POSTGRES_PASSWORD
+            # 마운트 루트가 아닌 하위 디렉터리를 데이터 경로로 사용 — lost+found 충돌 방지.
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "travelfood", "-d", "travelfood"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "travelfood", "-d", "travelfood"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: oci-bv
+        resources:
+          requests:
+            # oci-bv 블록볼륨 최소 프로비저닝 단위는 50Gi.
+            storage: 50Gi

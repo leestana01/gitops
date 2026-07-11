@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: travelfood-web-config
+data:
+  NEXT_PUBLIC_BASE_URL: "https://dev.travelfood.klr.kr"
+  UPLOAD_DIR: "/data/uploads"
+  SEED_ON_MIGRATE: "true"

@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: travelfood-web-migrate
+  annotations:
+    # ArgoCD PreSync hook — Deployment rollout 전에 DB 마이그레이션을 돌린다.
+    # 실패 시 sync 전체가 실패 → Deployment 가 구 버전으로 유지되어 안전.
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  # 마이그레이션 실패 시 재시도 금지 — 실패는 sync fail 로 즉시 노출되어야 한다.
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ocir-secret
+      containers:
+        - name: migrate
+          # 이미지 이름은 Deployment 와 동일하게 유지 — overlay 의
+          # `images.newTag` 한 번에 두 리소스 태그가 동시 갱신됨.
+          image: yny.ocir.io/axlgn2n9ijoa/travelfood/web
+          command: ["/bin/sh", "/app/scripts/migrate.sh"]
+          envFrom:
+            - configMapRef:
+                name: travelfood-web-config
+            - secretRef:
+                name: travelfood-web-secrets
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "768Mi"

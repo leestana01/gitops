@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travelfood-web
+  labels:
+    app: travelfood-web
+spec:
+  replicas: 1
+  # RWO 업로드 PVC 를 쓰기 때문에 rolling update 시 신구 파드가 동일 볼륨을
+  # 동시에 붙잡아 Multi-Attach 오류가 난다 → Recreate 로 구 파드 종료 후 재부착.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: travelfood-web
+  template:
+    metadata:
+      labels:
+        app: travelfood-web
+    spec:
+      containers:
+        - name: travelfood-web
+          image: yny.ocir.io/axlgn2n9ijoa/travelfood/web
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). nameSuffix 가 붙은 경우 자동 rewrite.
+            - configMapRef:
+                name: travelfood-web-config
+            # 시크릿 env (네임스페이스별로 수동 생성).
+            - secretRef:
+                name: travelfood-web-secrets
+          volumeMounts:
+            - name: uploads
+              mountPath: /data/uploads
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "768Mi"
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: travelfood-web-uploads
+      imagePullSecrets:
+        - name: ocir-secret
