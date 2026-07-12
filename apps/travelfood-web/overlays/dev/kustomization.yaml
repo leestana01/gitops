@@ -9,4 +9,4 @@ namespace: travelfood-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/travelfood/web
-    newTag: dev-1
+    newTag: dev-2
