@@ -25,6 +25,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: travelfood-web-config
+                # 최초 sync 시 PreSync 훅이 메인 sync 의 ConfigMap 보다 먼저 실행되는
+                # 부트스트랩 순서 문제를 피한다. (미존재 시 SEED_ON_MIGRATE 등은 생략)
+                optional: true
             - secretRef:
                 name: travelfood-web-secrets
           resources:
