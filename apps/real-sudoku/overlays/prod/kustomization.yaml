@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - configmap.yaml
+  - ingress.yaml
+  - namespace.yaml
+namespace: sudoku
+images:
+  - name: yny.ocir.io/axlgn2n9ijoa/real-sudoku/web
+    newTag: prod-1

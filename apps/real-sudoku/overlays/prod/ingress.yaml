@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: real-sudoku-web
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # SSE(랭킹 매칭·경기·대결 스트림)는 장기 연결이다. 기본 60s 타임아웃으로는
+    # 경기 도중 끊기므로 넉넉히 늘리고, 버퍼링을 꺼 이벤트를 즉시 흘려보낸다.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - sudoku.klr.kr
+      secretName: sudoku-klr-kr-tls
+  rules:
+    - host: sudoku.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: real-sudoku-web
+                port:
+                  number: 3000

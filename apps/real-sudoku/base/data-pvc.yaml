@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: real-sudoku-web-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: oci-bv
+  resources:
+    requests:
+      # oci-bv 블록볼륨 최소 프로비저닝 단위는 50Gi.
+      storage: 50Gi

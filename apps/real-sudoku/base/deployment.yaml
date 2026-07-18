@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: real-sudoku-web
+  labels:
+    app: real-sudoku-web
+spec:
+  replicas: 1
+  # SQLite 단일 파일 + 인메모리 매칭 큐 + SSE 장기 연결을 쓰므로 수평 확장 불가.
+  # RWO 볼륨을 신구 파드가 동시에 붙잡는 Multi-Attach 오류를 피하려 Recreate 로
+  # 구 파드 종료 후 재부착한다.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: real-sudoku-web
+  template:
+    metadata:
+      labels:
+        app: real-sudoku-web
+    spec:
+      # 마운트된 블록볼륨을 컨테이너 uid(1001)가 쓸 수 있게 그룹 소유권을 맞춘다.
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: real-sudoku-web
+          image: yny.ocir.io/axlgn2n9ijoa/real-sudoku/web
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). 앱에 외부 시크릿 의존성은 없다.
+            - configMapRef:
+                name: real-sudoku-web-config
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              # 퍼즐 생성(특히 MASTER)이 요청 스레드에서 CPU 버스트를 낸다.
+              cpu: "1"
+              memory: "768Mi"
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: real-sudoku-web-data
+      imagePullSecrets:
+        - name: ocir-secret

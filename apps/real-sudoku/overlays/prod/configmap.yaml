@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: real-sudoku-web-config
+data:
+  # SQLite DB가 놓이는 영속 볼륨 마운트 경로.
+  DATA_DIR: "/data"
