@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: 1
   # SQLite 단일 파일 + 인메모리 매칭 큐 + SSE 장기 연결을 쓰므로 수평 확장 불가.
-  # RWO 볼륨을 신구 파드가 동시에 붙잡는 Multi-Attach 오류를 피하려 Recreate 로
-  # 구 파드 종료 후 재부착한다.
+  # 단일 파드가 NFS 서브디렉토리에 DB를 쓰며, 롤아웃 시 신구 파드 동시 접근을
+  # 막으려 Recreate 로 구 파드 종료 후 재기동한다.
   strategy:
     type: Recreate
   selector:
@@ -19,22 +19,45 @@ spec:
       labels:
         app: real-sudoku-web
     spec:
-      # 마운트된 블록볼륨을 컨테이너 uid(1001)가 쓸 수 있게 그룹 소유권을 맞춘다.
-      securityContext:
-        fsGroup: 1001
+      # NFS export 가 no_root_squash 라 kubelet 이 subPath 디렉토리를 root 로 만든다.
+      # 비root 앱(uid 1001)이 쓸 수 있도록 initContainer(root)로 소유권을 맞춘다.
+      initContainers:
+        - name: init-data-perms
+          image: docker.io/library/busybox:1.36
+          command: ["sh", "-c", "chown -R 1001:1001 /data"]
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: DATA_SUBPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: real-sudoku-web-config
+                  key: DATA_SUBPATH
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              subPathExpr: $(DATA_SUBPATH)
       containers:
         - name: real-sudoku-web
           image: yny.ocir.io/axlgn2n9ijoa/real-sudoku/web
           ports:
             - containerPort: 3000
               name: http
+          env:
+            # subPathExpr 확장을 위해 명시적으로 노출 (envFrom 만으로는 확장이 보장되지 않음).
+            - name: DATA_SUBPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: real-sudoku-web-config
+                  key: DATA_SUBPATH
           envFrom:
-            # 비시크릿 env (overlay 에서 생성). 앱에 외부 시크릿 의존성은 없다.
             - configMapRef:
                 name: real-sudoku-web-config
           volumeMounts:
+            # 단일 shared NFS 의 앱별 서브디렉토리를 /data 로 마운트 (신규 PVC 미생성).
             - name: data
               mountPath: /data
+              subPathExpr: $(DATA_SUBPATH)
           resources:
             requests:
               cpu: "150m"
@@ -56,8 +79,10 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
       volumes:
+        # 클러스터 공용 단일 NFS(OCI FSS). 앱은 subPath 로 서브디렉토리만 사용한다.
         - name: data
-          persistentVolumeClaim:
-            claimName: real-sudoku-web-data
+          nfs:
+            server: 10.96.78.207
+            path: /shared
       imagePullSecrets:
         - name: ocir-secret

@@ -4,6 +4,9 @@ metadata:
   name: real-sudoku-web
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # dev는 내부망 전용 — K8s 노드망 + WireGuard VPN 클라이언트만 허용 (argocd/jenkins와 동일).
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24,10.0.100.0/24"
+    # SSE(랭킹 매칭·경기·대결 스트림) 장기 연결 대응.
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-buffering: "off"

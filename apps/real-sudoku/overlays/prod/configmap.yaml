@@ -3,5 +3,9 @@ kind: ConfigMap
 metadata:
   name: real-sudoku-web-config
 data:
-  # SQLite DB가 놓이는 영속 볼륨 마운트 경로.
+  # SQLite DB가 놓이는 마운트 경로 (NFS 서브디렉토리가 여기에 마운트됨).
   DATA_DIR: "/data"
+  # 단일 shared NFS 안에서 이 앱(prod)이 쓰는 서브디렉토리.
+  DATA_SUBPATH: "real-sudoku"
+  # NFS에서는 WAL이 미지원이라 단일 writer에 안전한 롤백 저널을 쓴다.
+  SQLITE_JOURNAL_MODE: "DELETE"

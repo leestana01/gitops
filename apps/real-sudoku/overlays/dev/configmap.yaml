@@ -4,3 +4,6 @@ metadata:
   name: real-sudoku-web-config
 data:
   DATA_DIR: "/data"
+  # 단일 shared NFS 안에서 이 앱(dev)이 쓰는 서브디렉토리 — prod와 분리.
+  DATA_SUBPATH: "real-sudoku-dev"
+  SQLITE_JOURNAL_MODE: "DELETE"
