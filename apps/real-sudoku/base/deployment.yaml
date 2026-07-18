@@ -54,6 +54,13 @@ spec:
             # 바인딩하도록 명시해 프로브·서비스 라우팅을 안정화한다.
             - name: HOSTNAME
               value: "0.0.0.0"
+            # MySQL 비밀번호는 git에 두지 않는다 — 네임스페이스별 수동 생성 시크릿.
+            # (재생성: kubectl -n <ns> create secret generic real-sudoku-mysql --from-literal=MYSQL_PASSWORD=...)
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: real-sudoku-mysql
+                  key: MYSQL_PASSWORD
           envFrom:
             - configMapRef:
                 name: real-sudoku-web-config

@@ -3,6 +3,13 @@ kind: ConfigMap
 metadata:
   name: real-sudoku-web-config
 data:
+  # 주 저장소는 HeatWave MySQL. MYSQL_HOST가 있으면 앱은 SQLite 대신 MySQL을 쓴다.
+  # 주의: MySQL 계정에 스키마 생성 권한이 없어 dev/prod가 real_sudoku 스키마를 공유한다.
+  MYSQL_HOST: "heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com"
+  MYSQL_PORT: "3306"
+  MYSQL_USER: "real_sudoku"
+  MYSQL_DATABASE: "real_sudoku"
+  # 아래는 SQLite 폴백용 (MYSQL_HOST 제거 시에만 사용) — 롤백 대비 유지.
   # SQLite DB가 놓이는 마운트 경로 (NFS 서브디렉토리가 여기에 마운트됨).
   DATA_DIR: "/data"
   # 단일 shared NFS 안에서 이 앱(prod)이 쓰는 서브디렉토리.
