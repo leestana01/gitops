@@ -50,6 +50,10 @@ spec:
                 configMapKeyRef:
                   name: real-sudoku-web-config
                   key: DATA_SUBPATH
+            # Next.js standalone은 HOSTNAME(기본은 파드명)에 바인딩한다. 모든 인터페이스에
+            # 바인딩하도록 명시해 프로브·서비스 라우팅을 안정화한다.
+            - name: HOSTNAME
+              value: "0.0.0.0"
           envFrom:
             - configMapRef:
                 name: real-sudoku-web-config
@@ -79,10 +83,11 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
       volumes:
-        # 클러스터 공용 단일 NFS(OCI FSS). 앱은 subPath 로 서브디렉토리만 사용한다.
+        # 클러스터 공용 단일 NFS(OCI FSS)를 nolock 으로 마운트하는 PVC(storage.yaml).
+        # SQLite fcntl 락이 NFS 원격 락 매니저에서 멈추는 문제를 피한다. subPath 로
+        # 서브디렉토리만 사용하므로 블록볼륨을 새로 만들지 않는다.
         - name: data
-          nfs:
-            server: 10.96.78.207
-            path: /shared
+          persistentVolumeClaim:
+            claimName: real-sudoku-web-data
       imagePullSecrets:
         - name: ocir-secret
