@@ -8,4 +8,4 @@ resources:
 namespace: sudoku
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/real-sudoku/web
-    newTag: prod-6
+    newTag: prod-7
