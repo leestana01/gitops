@@ -9,4 +9,4 @@ namespace: sudoku-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/real-sudoku/web
-    newTag: dev-13
+    newTag: dev-14
