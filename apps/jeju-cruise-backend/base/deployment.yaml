@@ -17,6 +17,10 @@ spec:
       containers:
         - name: jeju-cruise-back
           image: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/back
+          # NFS(no_root_squash) 볼트에 쓰려면 root 로 실행 (kubelet 이 subPath 를 root 로 생성).
+          # real-sudoku 등 NFS 쓰기 앱과 동일한 관례.
+          securityContext:
+            runAsUser: 0
           ports:
             - containerPort: 8080
               name: http
