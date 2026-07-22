@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jeju-cruise-back
+  labels:
+    app: jeju-cruise-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jeju-cruise-back
+  template:
+    metadata:
+      labels:
+        app: jeju-cruise-back
+    spec:
+      containers:
+        - name: jeju-cruise-back
+          image: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/back
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). nameSuffix 가 붙으면 자동 rewrite.
+            - configMapRef:
+                name: jeju-cruise-back-config
+            # 시크릿 env (SealedSecret/ESO 가 네임스페이스별로 생성).
+            - secretRef:
+                name: jeju-cruise-back-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+      imagePullSecrets:
+        - name: ocir-secret

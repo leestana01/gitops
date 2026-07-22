@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jeju-cruise-back-config
+data:
+  SPRING_PROFILES_ACTIVE: "dev"
+  JPA_DDL_AUTO: "update"
+  # Payment (non-secret). PayPal 은 모든 환경 공통 sandbox.
+  PAYMENT_CURRENCY: "KRW"
+  SETTLEMENT_CURRENCY: "USD"
+  FX_RATE: "1350"
+  APP_PAYMENT_PAYPAL_ENVIRONMENT: "SANDBOX"
+  # Tokens / CORS
+  JWT_ACCESS_TTL: "1800"
+  JWT_REFRESH_TTL: "1209600"
+  VOUCHER_TOKEN_TTL: "180"
+  CORS_ALLOWED_ORIGINS: "https://dev.cruise.klr.kr"
+  # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
+  SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/jeju_moyoung?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
