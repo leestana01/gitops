@@ -17,5 +17,10 @@ data:
   JWT_REFRESH_TTL: "1209600"
   VOUCHER_TOKEN_TTL: "180"
   CORS_ALLOWED_ORIGINS: "https://cruise.klr.kr"
+  # RAG chatbot. Vault (SoT) on NFS. Providers default to keyless local/stub; switch to
+  # voyage/anthropic once APP_RAG_EMBEDDING_API_KEY / APP_RAG_CHAT_API_KEY are set in the Secret.
+  RAG_VAULT_PATH: "/data/vault"
+  RAG_EMBEDDING_PROVIDER: "local"
+  RAG_CHAT_PROVIDER: "stub"
   # DB endpoint (non-secret). 현재 dev 와 동일 DB — 실서비스 전 prod 전용 스키마 분리 권장.
   SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/jeju_moyoung?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"

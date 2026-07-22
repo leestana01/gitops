@@ -27,6 +27,11 @@ spec:
             # 시크릿 env (SealedSecret/ESO 가 네임스페이스별로 생성).
             - secretRef:
                 name: jeju-cruise-back-secrets
+          volumeMounts:
+            # RAG Obsidian 볼트 (SoT). NFS /shared 아래 subPath.
+            - name: vault
+              mountPath: /data/vault
+              subPath: jeju-cruise-back/vault
           resources:
             requests:
               cpu: "250m"
@@ -50,5 +55,9 @@ spec:
               path: /actuator/health/liveness
               port: 8080
             periodSeconds: 10
+      volumes:
+        - name: vault
+          persistentVolumeClaim:
+            claimName: jeju-cruise-back-data
       imagePullSecrets:
         - name: ocir-secret
