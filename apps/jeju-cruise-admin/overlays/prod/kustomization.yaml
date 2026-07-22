@@ -9,4 +9,4 @@ resources:
 namespace: cruise
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/admin
-    newTag: prod-1
+    newTag: prod-2
