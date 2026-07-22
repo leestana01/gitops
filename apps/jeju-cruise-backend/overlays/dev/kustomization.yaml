@@ -8,4 +8,4 @@ namespace: cruise-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/back
-    newTag: dev-8
+    newTag: dev-9
