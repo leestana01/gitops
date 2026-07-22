@@ -17,6 +17,9 @@ data:
   JWT_REFRESH_TTL: "1209600"
   VOUCHER_TOKEN_TTL: "180"
   CORS_ALLOWED_ORIGINS: "https://cruise.klr.kr"
+  # Swagger: prod 는 완전 차단 (api-docs + UI 모두 비활성 → 404).
+  SPRINGDOC_APIDOCS_ENABLED: "false"
+  SPRINGDOC_SWAGGERUI_ENABLED: "false"
   # RAG chatbot. Vault (SoT) on NFS. Providers default to keyless local/stub; switch to
   # voyage/anthropic once APP_RAG_EMBEDDING_API_KEY / APP_RAG_CHAT_API_KEY are set in the Secret.
   RAG_VAULT_PATH: "/data/vault"
