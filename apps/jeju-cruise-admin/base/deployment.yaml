@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jeju-cruise-admin
+  labels:
+    app: jeju-cruise-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jeju-cruise-admin
+  template:
+    metadata:
+      labels:
+        app: jeju-cruise-admin
+    spec:
+      containers:
+        - name: jeju-cruise-admin
+          image: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/admin
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: ocir-secret
