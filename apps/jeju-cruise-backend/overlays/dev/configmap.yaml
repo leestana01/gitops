@@ -18,7 +18,11 @@ data:
   # RAG chatbot. Vault (SoT) on NFS. Providers default to keyless local/stub; switch to
   # voyage/anthropic once APP_RAG_EMBEDDING_API_KEY / APP_RAG_CHAT_API_KEY are set in the Secret.
   RAG_VAULT_PATH: "/data/vault"
-  RAG_EMBEDDING_PROVIDER: "local"
-  RAG_CHAT_PROVIDER: "stub"
+  RAG_EMBEDDING_PROVIDER: "openai"
+  RAG_EMBEDDING_MODEL: "text-embedding-3-small"
+  RAG_EMBEDDING_BASE_URL: "https://api.openai.com/v1/embeddings"
+  RAG_CHAT_PROVIDER: "openai"
+  RAG_CHAT_MODEL: "gpt-4o-mini"
+  RAG_CHAT_BASE_URL: "https://api.openai.com/v1/chat/completions"
   # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
   SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/jeju_moyoung?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
