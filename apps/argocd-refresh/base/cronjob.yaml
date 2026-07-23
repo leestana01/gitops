@@ -1,0 +1,43 @@
+# Workaround: ArgoCD v3.3.7 application-controller periodic resync is not firing
+# (apps reconcile once at controller startup then never re-check git on the timer).
+# This CronJob restores automatic detection by hard-refreshing all Applications
+# every 2 minutes, so Jenkins image-tag commits deploy without manual intervention.
+# Uses the argocd image already present on the nodes (bundles kubectl).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: argocd-refresh
+  namespace: argocd
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 60
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 90
+      template:
+        spec:
+          serviceAccountName: argocd-refresh
+          restartPolicy: Never
+          containers:
+            - name: refresh
+              image: quay.io/argoproj/argocd:v3.3.7
+              command:
+                - kubectl
+                - annotate
+                - applications
+                - -n
+                - argocd
+                - --all
+                - argocd.argoproj.io/refresh=hard
+                - --overwrite
+              resources:
+                requests:
+                  cpu: "10m"
+                  memory: "32Mi"
+                limits:
+                  cpu: "100m"
+                  memory: "128Mi"
