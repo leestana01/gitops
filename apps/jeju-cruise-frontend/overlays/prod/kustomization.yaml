@@ -7,4 +7,4 @@ resources:
 namespace: cruise
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/jeju-cruise/front
-    newTag: prod-7
+    newTag: prod-8
