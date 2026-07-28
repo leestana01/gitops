@@ -7,4 +7,4 @@ resources:
 namespace: leeshfield
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/leeshfield/app
-    newTag: prod-14
+    newTag: prod-15
