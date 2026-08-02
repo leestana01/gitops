@@ -6,7 +6,9 @@ data:
   SPRING_PROFILES_ACTIVE: "prod"
   # 마이그레이션 도구 도입 전까지 update 로 스키마 부트스트랩.
   JPA_DDL_AUTO: "update"
-  CORS_ALLOWED_ORIGINS: "https://onedayflex.klr.kr"
+  # "*" 허용: 쿠키/세션 미사용(JWT 헤더, allowCredentials=false)이라 CORS 개방 위험 없음.
+  # 토스 콘솔의 콜백 테스트가 브라우저 fetch 로 들어와 특정 오리진 제한 시 실패한다.
+  CORS_ALLOWED_ORIGINS: "*"
   # Swagger: prod 는 완전 차단.
   SPRINGDOC_APIDOCS_ENABLED: "false"
   SPRINGDOC_SWAGGERUI_ENABLED: "false"
