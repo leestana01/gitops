@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: onedayflex-backend-dev
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.discord: ""
+    notifications.argoproj.io/subscribe.on-sync-failed.discord: ""
+    notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/leestana01/gitops.git
+    targetRevision: main
+    path: apps/onedayflex-backend/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: onedayflex-dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

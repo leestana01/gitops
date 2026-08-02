@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onedayflex-back
+  labels:
+    app: onedayflex-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onedayflex-back
+  template:
+    metadata:
+      labels:
+        app: onedayflex-back
+    spec:
+      containers:
+        - name: onedayflex-back
+          image: yny.ocir.io/axlgn2n9ijoa/onedayflex/back
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). nameSuffix 가 붙으면 자동 rewrite.
+            - configMapRef:
+                name: onedayflex-back-config
+            # 시크릿 env (네임스페이스별로 수동 생성 — DB/JWT/Kakao/OpenAI).
+            - secretRef:
+                name: onedayflex-back-secrets
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+      imagePullSecrets:
+        - name: ocir-secret

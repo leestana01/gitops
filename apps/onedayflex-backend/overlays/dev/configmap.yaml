@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: onedayflex-back-config
+data:
+  SPRING_PROFILES_ACTIVE: "dev"
+  JPA_DDL_AUTO: "update"
+  # CORS: dev 는 내부망 전용이라 느슨하게 둔다.
+  CORS_ALLOWED_ORIGINS: "*"
+  # Swagger: dev 는 JSON(api-docs)만 노출, 인터랙티브 UI 는 끔.
+  SPRINGDOC_APIDOCS_ENABLED: "true"
+  SPRINGDOC_SWAGGERUI_ENABLED: "false"
+  # OpenAI 콘텐츠 생성 — dev 는 비용 절약을 위해 상한을 낮게.
+  OPENAI_MODEL: "gpt-4o-mini"
+  CONTENT_GEN_DAILY_CAP: "100"
+  CONTENT_TOPUP_INTERVAL_MS: "3600000"
+  # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
+  SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/onedayflex_dev?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
