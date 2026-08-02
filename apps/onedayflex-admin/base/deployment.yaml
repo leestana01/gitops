@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onedayflex-admin
+  labels:
+    app: onedayflex-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onedayflex-admin
+  template:
+    metadata:
+      labels:
+        app: onedayflex-admin
+    spec:
+      containers:
+        - name: onedayflex-admin
+          image: yny.ocir.io/axlgn2n9ijoa/onedayflex/admin
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: ocir-secret
