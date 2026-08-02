@@ -1,7 +1,10 @@
 # Workaround: ArgoCD v3.3.7 application-controller periodic resync is not firing
 # (apps reconcile once at controller startup then never re-check git on the timer).
-# This CronJob restores automatic detection by hard-refreshing all Applications
-# every 2 minutes, so Jenkins image-tag commits deploy without manual intervention.
+# This CronJob restores automatic detection by refreshing all Applications every
+# 2 minutes, so Jenkins image-tag commits deploy without manual intervention.
+# refresh=normal (not hard): manifest cache stays valid, and combined with the
+# manifest-generate-paths annotation on each Application, only apps whose source
+# path changed in a new commit re-render — the rest stay quiet in the UI.
 # Image: fully-qualified (CRI-O enforces short-name rejection); IfNotPresent so a
 # later docker.io change can't break already-cached nodes.
 apiVersion: batch/v1
@@ -34,7 +37,7 @@ spec:
                 - -n
                 - argocd
                 - --all
-                - argocd.argoproj.io/refresh=hard
+                - argocd.argoproj.io/refresh=normal
                 - --overwrite
               resources:
                 requests:

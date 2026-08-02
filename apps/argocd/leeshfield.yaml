@@ -4,6 +4,8 @@ metadata:
   name: leeshfield
   namespace: argocd
   annotations:
+    # 이 경로가 바뀐 커밋에서만 매니페스트 재생성 — 타 앱 커밋에는 조용히 캐시 사용
+    argocd.argoproj.io/manifest-generate-paths: /apps/leeshfield
     notifications.argoproj.io/subscribe.on-deployed.discord: ""
     notifications.argoproj.io/subscribe.on-sync-failed.discord: ""
     notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
