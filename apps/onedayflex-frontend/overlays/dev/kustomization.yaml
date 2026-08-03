@@ -8,4 +8,4 @@ namespace: onedayflex-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/front
-    newTag: dev-14
+    newTag: dev-15
