@@ -15,5 +15,8 @@ data:
   # OpenAI 콘텐츠 생성 — 풀 하한 유지 + 일일 상한으로 비용 통제.
   OPENAI_MODEL: "gpt-4o-mini"
   CONTENT_GEN_DAILY_CAP: "400"
+  # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
+  APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
+  APP_TOSS_MTLS_KEY_PATH: "/etc/toss-mtls/tls.key"
   # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
   SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/onedayflex?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"

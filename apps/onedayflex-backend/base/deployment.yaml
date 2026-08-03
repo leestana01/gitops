@@ -27,6 +27,11 @@ spec:
             # 시크릿 env (네임스페이스별로 수동 생성 — DB/JWT/Kakao/OpenAI).
             - secretRef:
                 name: onedayflex-back-secrets
+          volumeMounts:
+            # 앱인토스 파트너 API mTLS 인증서(토스 로그인 + 인앱결제 주문검증 공용).
+            - name: toss-mtls
+              mountPath: /etc/toss-mtls
+              readOnly: true
           resources:
             requests:
               cpu: "100m"
@@ -50,5 +55,11 @@ spec:
               path: /actuator/health/liveness
               port: 8080
             periodSeconds: 10
+      volumes:
+        # 네임스페이스별 수동 생성 Secret. 없는 환경(dev)에서도 기동되도록 optional.
+        - name: toss-mtls
+          secret:
+            secretName: onedayflex-toss-mtls
+            optional: true
       imagePullSecrets:
         - name: ocir-secret

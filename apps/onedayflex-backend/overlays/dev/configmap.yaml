@@ -14,5 +14,9 @@ data:
   OPENAI_MODEL: "gpt-4o-mini"
   CONTENT_GEN_DAILY_CAP: "100"
   CONTENT_TOPUP_INTERVAL_MS: "3600000"
+  # 앱인토스 파트너 API mTLS — dev 에는 Secret 이 없어도 되고(optional 마운트),
+  # 없으면 토스 로그인은 TOSS_LOGIN_NOT_READY 로 폴백한다.
+  APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
+  APP_TOSS_MTLS_KEY_PATH: "/etc/toss-mtls/tls.key"
   # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
   SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/onedayflex_dev?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
