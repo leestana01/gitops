@@ -21,6 +21,9 @@ data:
   CONTENT_GEN_DAILY_CAP: "400"
   # 앱인토스 메신저 푸시 스케줄러. 콘솔에 승인된 템플릿(16종)이 등록돼 있어야 발송된다.
   APP_PUSH_ENABLED: "true"
+  # 단어 발음 음원(OCI 오브젝트 스토리지, 공개 읽기). 뒤에 {lang}/{wordId}.mp3 가 붙는다.
+  # 토스 안드로이드 WebView 에 음성합성 API 가 없어 파일 재생으로 대체했다.
+  APP_AUDIO_BASE_URL: "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axlgn2n9ijoa/b/onedayflex-audio/o/"
   # 인앱결제 상품 ID — 콘솔이 발급한 값(요청자 지정 불가). 비어 있으면 앱 채널 구독은
   # IAP_NOT_CONFIGURED 로 폴백하고 코스 결제 버튼이 잠긴다. 비밀값이 아니라 ConfigMap 에 둔다.
   # 구독 결제가 결제창에서 실패하는 문제 진단용 — 오퍼(FREE_TRIAL 1주) 가 붙은 상품.
