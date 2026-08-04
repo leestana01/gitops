@@ -37,7 +37,12 @@ data:
   #
   # minDeploymentId 는 이 문제와 무관했다(null/라이브 지정 모두 동일하게 실패). 롤백해도
   # 상품이 사라지지 않도록 비워 둔 상품을 쓴다.
-  APP_IAP_MONTHLY_SKU: "sub.1a3c.mse9d4eb.54a310c952"
+  #
+  # 오퍼를 붙여 offerId 를 넘겨도 INVALID_PRODUCT_ID 로 거절된다. sku·offerId 는 모두
+  # getProductItemList 가 준 값을 그대로 되돌려준 것이라 값을 만들어내는 자리가 없고,
+  # SDK 도 3.0.2 와 규격이 같아 버전 문제가 아니다. 남은 변수는 무료체험이 만든 0원 주문이라
+  # 월간을 신규할인(첫 달 2,200원)으로 바꿔 0원을 지우고 대조한다.
+  APP_IAP_MONTHLY_SKU: "sub.1a3c.mseolqyy.d2aa61d766"
   APP_IAP_YEARLY_SKU: "sub.1a3c.mseoedjg.32c350d02c"
   APP_IAP_COURSE_SKU: "ait.0000059736.5903855d.f8996af828.5822350083"
   # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
