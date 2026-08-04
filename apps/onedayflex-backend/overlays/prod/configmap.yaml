@@ -4,6 +4,10 @@ metadata:
   name: onedayflex-back-config
 data:
   SPRING_PROFILES_ACTIVE: "prod"
+  # 컨테이너 기본은 UTC 라 LocalDate/LocalTime 이 전부 UTC 로 돈다.
+  # 푸시 발송 시각·야간 금지 시간대·일일 한도·스트릭 날짜 경계가 모두 여기에 걸리므로
+  # 서비스 기준 시간대(KST)를 명시한다. (미설정 시 20시 발송 = 한국 새벽 5시)
+  TZ: "Asia/Seoul"
   # 마이그레이션 도구 도입 전까지 update 로 스키마 부트스트랩.
   JPA_DDL_AUTO: "update"
   # "*" 허용: 쿠키/세션 미사용(JWT 헤더, allowCredentials=false)이라 CORS 개방 위험 없음.
