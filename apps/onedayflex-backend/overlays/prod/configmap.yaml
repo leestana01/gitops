@@ -26,10 +26,16 @@ data:
   APP_AUDIO_BASE_URL: "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axlgn2n9ijoa/b/onedayflex-audio/o/"
   # 인앱결제 상품 ID — 콘솔이 발급한 값(요청자 지정 불가). 비어 있으면 앱 채널 구독은
   # IAP_NOT_CONFIGURED 로 폴백하고 코스 결제 버튼이 잠긴다. 비밀값이 아니라 ConfigMap 에 둔다.
-  # 구독 결제가 결제창에서 실패하는 문제 진단용 — 오퍼(FREE_TRIAL 1주) 가 붙은 상품.
-  # 오퍼 없는 상품(sub.1a3c.mse8i6g4.62b0c1b31b)에서 실패해 변수를 하나만 바꿔 대조한다.
-  APP_IAP_MONTHLY_SKU: "sub.1a3c.mse9d4eb.54a310c952"
-  APP_IAP_YEARLY_SKU: "sub.1a3c.mse8ifbm.32939d09fe"
+  #
+  # 구독만 결제창에서 "상품을 살 수 없어요" 로 끝나는 문제를 대조로 좁힌 결과:
+  #   코스 CONSUMABLE  오퍼없음  minDeploymentId=null  → 성공
+  #   월간 mse8i6g4    오퍼없음  minDeploymentId=null  → 실패
+  #   월간 mse9d4eb    FREE_TRIAL  minDeploymentId=null → 실패
+  # 오퍼를 빼도 실패했으므로 오퍼는 원인이 아니고, 남는 차이는 minDeploymentId 뿐이다.
+  # 그래서 아래 두 상품은 오퍼 없이 minDeploymentId 를 라이브 배포(20260804-17)로 지정했다.
+  # 이래도 실패하면 상품 설정이 아니라 스토어 구독 상품(기본 요금제) 쪽 문제다.
+  APP_IAP_MONTHLY_SKU: "sub.1a3c.mselhrub.5d5f63c205"
+  APP_IAP_YEARLY_SKU: "sub.1a3c.mseljjrh.17b616c9a2"
   APP_IAP_COURSE_SKU: "ait.0000059736.5903855d.f8996af828.5822350083"
   # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
   APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
