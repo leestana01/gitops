@@ -15,6 +15,8 @@ data:
   # OpenAI 콘텐츠 생성 — 풀 하한 유지 + 일일 상한으로 비용 통제.
   OPENAI_MODEL: "gpt-4o-mini"
   CONTENT_GEN_DAILY_CAP: "400"
+  # 앱인토스 메신저 푸시 스케줄러. 콘솔에 승인된 템플릿(16종)이 등록돼 있어야 발송된다.
+  APP_PUSH_ENABLED: "true"
   # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
   APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
   APP_TOSS_MTLS_KEY_PATH: "/etc/toss-mtls/tls.key"
