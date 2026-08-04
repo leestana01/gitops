@@ -21,6 +21,11 @@ data:
   CONTENT_GEN_DAILY_CAP: "400"
   # 앱인토스 메신저 푸시 스케줄러. 콘솔에 승인된 템플릿(16종)이 등록돼 있어야 발송된다.
   APP_PUSH_ENABLED: "true"
+  # 인앱결제 상품 ID — 콘솔이 발급한 값(요청자 지정 불가). 비어 있으면 앱 채널 구독은
+  # IAP_NOT_CONFIGURED 로 폴백하고 코스 결제 버튼이 잠긴다. 비밀값이 아니라 ConfigMap 에 둔다.
+  APP_IAP_MONTHLY_SKU: "sub.1a3c.mse89y2z.cf9a690a39"
+  APP_IAP_YEARLY_SKU: "sub.1a3c.mse8b5in.84afac0ed4"
+  APP_IAP_COURSE_SKU: "ait.0000059736.5903855d.7ea693b51b.5822013601"
   # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
   APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
   APP_TOSS_MTLS_KEY_PATH: "/etc/toss-mtls/tls.key"
