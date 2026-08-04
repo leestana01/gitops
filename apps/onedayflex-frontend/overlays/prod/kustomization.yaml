@@ -7,4 +7,4 @@ resources:
 namespace: onedayflex
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/front
-    newTag: prod-16
+    newTag: prod-17
