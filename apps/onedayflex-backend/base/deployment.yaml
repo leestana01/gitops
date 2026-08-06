@@ -55,6 +55,15 @@ spec:
               path: /actuator/health/liveness
               port: 8080
             periodSeconds: 10
+          # 종료 직전 잠깐 버틴다. k8s 는 엔드포인트 제거와 SIGTERM 을 동시에 보내므로,
+          # 이 대기가 없으면 인그레스가 아직 이 파드로 보내는 사이에 서버가 내려가
+          # 학습 요청이 503 으로 떨어진다(2026-08-06 배포 중 실사용자 21건 실패).
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+      # preStop 5초 + 진행 중 요청 처리 시간을 담을 만큼은 준다(기본 30초).
+      terminationGracePeriodSeconds: 45
       volumes:
         # 네임스페이스별 수동 생성 Secret. 없는 환경(dev)에서도 기동되도록 optional.
         - name: toss-mtls
