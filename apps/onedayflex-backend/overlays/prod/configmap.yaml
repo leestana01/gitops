@@ -51,8 +51,8 @@ data:
   # 남은 차이는 상품 생성 후 스토어 반영까지의 시간뿐이다 — 소모품은 만든 지 두 시간 넘어
   # 테스트했고 구독은 계속 새로 만들어가며 시험했다. 그래서 가장 오래된(9시간 경과) 구독
   # 상품으로 되돌려 확인한다.
-  APP_IAP_MONTHLY_SKU: "sub.1a3c.mse8i6g4.62b0c1b31b"
-  APP_IAP_YEARLY_SKU: "sub.1a3c.mse8ifbm.32939d09fe"
+  APP_IAP_MONTHLY_SKU: "sub.1a3c.msgtvffl.f683e90ca4"
+  APP_IAP_YEARLY_SKU: "sub.1a3c.msgtvmt2.936e0d4534"
   APP_IAP_COURSE_SKU: "ait.0000059736.5903855d.f8996af828.5822350083"
   # 앱인토스 파트너 API mTLS — Secret onedayflex-toss-mtls 를 /etc/toss-mtls 로 마운트.
   APP_TOSS_MTLS_CERT_PATH: "/etc/toss-mtls/tls.crt"
