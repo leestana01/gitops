@@ -6,4 +6,4 @@ resources:
 namespace: onedayflex
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/admin
-    newTag: prod-8
+    newTag: prod-9
