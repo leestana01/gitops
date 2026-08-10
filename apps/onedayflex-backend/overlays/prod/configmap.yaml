@@ -59,3 +59,9 @@ data:
   APP_TOSS_MTLS_KEY_PATH: "/etc/toss-mtls/tls.key"
   # DB endpoint (non-secret). 자격증명은 Secret 의 SPRING_DATASOURCE_USERNAME/PASSWORD.
   SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/onedayflex?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+  # 운영 알림 메일(결제·문의). OCI Email Delivery 직접 릴레이 — 승인 발신자만 통과한다.
+  # 자격(SMTP_USER/SMTP_PASSWORD)은 Secret onedayflex-back-secrets 에 있다.
+  SMTP_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
+  SMTP_PORT: "587"
+  APP_MAIL_FROM: "no-reply@klr.kr"
+  APP_MAIL_TO: "leestana01@naver.com"
