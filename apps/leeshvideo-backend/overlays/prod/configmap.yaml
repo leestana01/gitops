@@ -8,10 +8,12 @@ data:
   ASSETS_DIR: "/app/data/assets"
   DATA_SUBPATH: "leeshvideo"
   TOSS_API_BASE_URL: "https://apps-in-toss-api.toss.im"
-  # mTLS 클라이언트 인증서 SSL 번들 (leeshvideo-toss-mtls Secret 마운트 경로)
-  TOSS_SSL_BUNDLE: "toss"
-  SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_CERTIFICATE: "/etc/toss-mtls/tls.crt"
-  SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_PRIVATE_KEY: "/etc/toss-mtls/tls.key"
+  # 앱인토스 파트너 mTLS 인증서 발급 후 leeshvideo-toss-mtls Secret 생성하고 아래 3줄을 활성화한다.
+  # 번들 경로가 설정된 상태에서 인증서 파일이 없으면 부팅이 실패하므로, 발급 전에는 빈 값으로 둔다.
+  TOSS_SSL_BUNDLE: ""
+  # TOSS_SSL_BUNDLE: "toss"
+  # SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_CERTIFICATE: "/etc/toss-mtls/tls.crt"
+  # SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_PRIVATE_KEY: "/etc/toss-mtls/tls.key"
   # ModelArk는 콜백을 지원하지 않는다(leeshfield 운영 검증) — 폴링 워커가 상태를 가져온다.
   # 공급자가 callback_url을 지원하게 되면 true로 전환.
   PROVIDER_CALLBACK_ENABLED: "false"
