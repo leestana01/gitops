@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: leeshvideo-back-config
+data:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/leeshvideo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+  PUBLIC_BASE_URL: "https://api.leeshvideo.klr.kr"
+  ASSETS_DIR: "/app/data/assets"
+  DATA_SUBPATH: "leeshvideo"
+  TOSS_API_BASE_URL: "https://apps-in-toss-api.toss.im"
+  # mTLS 클라이언트 인증서 SSL 번들 (leeshvideo-toss-mtls Secret 마운트 경로)
+  TOSS_SSL_BUNDLE: "toss"
+  SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_CERTIFICATE: "/etc/toss-mtls/tls.crt"
+  SPRING_SSL_BUNDLE_PEM_TOSS_KEYSTORE_PRIVATE_KEY: "/etc/toss-mtls/tls.key"
+  # ModelArk는 콜백을 지원하지 않는다(leeshfield 운영 검증) — 폴링 워커가 상태를 가져온다.
+  # 공급자가 callback_url을 지원하게 되면 true로 전환.
+  PROVIDER_CALLBACK_ENABLED: "false"

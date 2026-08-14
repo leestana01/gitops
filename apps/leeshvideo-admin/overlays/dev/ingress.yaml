@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leeshvideo-admin
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # 운영자 전용 콘솔 — K8s 노드망 + WireGuard VPN 클라이언트만 허용.
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24,10.0.100.0/24"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - admin.dev.leeshvideo.klr.kr
+      secretName: admin-dev-leeshvideo-klr-kr-tls
+  rules:
+    - host: admin.dev.leeshvideo.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: leeshvideo-admin-dev
+                port:
+                  number: 80

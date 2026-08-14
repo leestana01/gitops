@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leeshvideo-back
+  labels:
+    app: leeshvideo-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: leeshvideo-back
+  template:
+    metadata:
+      labels:
+        app: leeshvideo-back
+    spec:
+      containers:
+        - name: leeshvideo-back
+          image: yny.ocir.io/axlgn2n9ijoa/leeshvideo/back
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성). nameSuffix 가 붙으면 자동 rewrite.
+            - configMapRef:
+                name: leeshvideo-back-config
+            # 시크릿 env (네임스페이스별 수동 생성 — DB/JWT/ARK/콜백/어드민 토큰).
+            - secretRef:
+                name: leeshvideo-back-secrets
+          env:
+            # subPathExpr 확장을 위해 명시적으로 노출.
+            - name: DATA_SUBPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: leeshvideo-back-config
+                  key: DATA_SUBPATH
+          volumeMounts:
+            # 입력 레퍼런스 임시 저장소 — 단일 shared NFS 의 서브디렉토리(subPath)만 사용.
+            # 출력 영상은 저장하지 않으므로(스펙 §18) 용량은 임시 자산 TTL 분량이면 충분하다.
+            - name: data
+              mountPath: /app/data
+              subPathExpr: $(DATA_SUBPATH)
+            # 앱인토스 파트너 API mTLS 인증서(토스 로그인 + 인앱결제 주문검증 공용).
+            - name: toss-mtls
+              mountPath: /etc/toss-mtls
+              readOnly: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+          # 엔드포인트 제거와 SIGTERM 동시 전파 사이의 레이스 방지 (onedayflex 선례).
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+      terminationGracePeriodSeconds: 45
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: leeshvideo-back-data
+        # 네임스페이스별 수동 생성 Secret. 없는 환경(dev)에서도 기동되도록 optional.
+        - name: toss-mtls
+          secret:
+            secretName: leeshvideo-toss-mtls
+            optional: true
+      imagePullSecrets:
+        - name: ocir-secret

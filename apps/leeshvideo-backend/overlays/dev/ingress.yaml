@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leeshvideo-back
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "120m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.dev.leeshvideo.klr.kr
+      secretName: api-dev-leeshvideo-klr-kr-tls
+  rules:
+    - host: api.dev.leeshvideo.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: leeshvideo-back-dev
+                port:
+                  number: 8080
