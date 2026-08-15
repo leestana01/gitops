@@ -6,4 +6,4 @@ resources:
 namespace: leeshvideo
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/leeshvideo/admin
-    newTag: prod-1
+    newTag: prod-3
