@@ -8,6 +8,10 @@ data:
   ASSETS_DIR: "/app/data/assets"
   DATA_SUBPATH: "leeshvideo"
   TOSS_API_BASE_URL: "https://apps-in-toss-api.toss.im"
+  # 연결 끊기 콜백 자격증명의 사용자부. 콘솔에 넣는 Basic 헤더는
+  # base64(TOSS_DISCONNECT_USERNAME:TOSS_DISCONNECT_PASSWORD)이며,
+  # 비밀번호부는 Secret leeshvideo-back-secrets 에만 둔다.
+  TOSS_DISCONNECT_USERNAME: "leeshvideo-disconnect"
   # 앱인토스 파트너 mTLS 인증서 발급 후 leeshvideo-toss-mtls Secret 생성하고 아래 3줄을 활성화한다.
   # 번들 경로가 설정된 상태에서 인증서 파일이 없으면 부팅이 실패하므로, 발급 전에는 빈 값으로 둔다.
   TOSS_SSL_BUNDLE: ""
