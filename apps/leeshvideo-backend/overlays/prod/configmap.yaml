@@ -26,3 +26,10 @@ data:
   # 조건 기반 동의문에 묶여 있어 만료 임박 시점에 API로 보낸다.
   PUSH_ENABLED: "true"
   PUSH_TEMPLATE_CREDIT_EXPIRY: "leeshvideo-credit-expiry"
+  # 인앱 광고(배너). 보상형은 지급 크레딧 원가가 시청 수익보다 커서 폐지했다 —
+  # 배너는 크레딧을 주지 않으므로 노출이 그대로 수익이 된다.
+  # 지면 ID는 앱인토스 콘솔 발급값이며, 구글 반영 전에는 코드에 넣어도 광고가 나오지 않는다.
+  # 반영이 끝나 ID를 채운 뒤 ADS_BANNER_ENABLED 를 true 로 바꾼다.
+  ADS_BANNER_ENABLED: "false"
+  ADS_BANNER_CREDITS_AD_GROUP_ID: ""
+  ADS_BANNER_HISTORY_AD_GROUP_ID: ""
