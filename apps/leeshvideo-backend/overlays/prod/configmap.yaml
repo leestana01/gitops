@@ -22,3 +22,7 @@ data:
   # ModelArk는 콜백을 지원하지 않는다(leeshfield 운영 검증) — 폴링 워커가 상태를 가져온다.
   # 공급자가 callback_url을 지원하게 되면 true로 전환.
   PROVIDER_CALLBACK_ENABLED: "false"
+  # 스마트 발송. 발송 코드는 콘솔 캠페인 '크레딧 만료 안내'의 값이다.
+  # 조건 기반 동의문에 묶여 있어 만료 임박 시점에 API로 보낸다.
+  PUSH_ENABLED: "true"
+  PUSH_TEMPLATE_CREDIT_EXPIRY: "leeshvideo-credit-expiry"
