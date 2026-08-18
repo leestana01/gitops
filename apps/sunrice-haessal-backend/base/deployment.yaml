@@ -25,10 +25,6 @@ spec:
                 name: sunrice-haessal-back-config
             - secretRef:
                 name: sunrice-haessal-back-secrets
-          volumeMounts:
-            - name: data
-              mountPath: /data
-              subPath: sunrice-haessal
           resources:
             requests:
               cpu: "100m"
@@ -52,7 +48,3 @@ spec:
       terminationGracePeriodSeconds: 45
       imagePullSecrets:
         - name: ocir-secret
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: sunrice-haessal-nfs
