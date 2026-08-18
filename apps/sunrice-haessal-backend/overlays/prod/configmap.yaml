@@ -17,3 +17,4 @@ data:
   FEEDING_SKU_3000: "ait.0000064918.cb36b23d.394eea2fdf.7065976941"
   FEEDING_SKU_5000: "ait.0000064918.af89c666.69e171d735.7065986544"
   FEEDING_SKU_10000: "ait.0000064918.558c84e2.446891bf87.7065996493"
+  STICKER_BUCKET_PUBLIC_URL: https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axlgn2n9ijoa/b/sunrice-haessal-stickers/o/
