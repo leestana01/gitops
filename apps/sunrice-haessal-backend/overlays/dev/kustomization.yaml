@@ -6,4 +6,4 @@ resources:
 namespace: sunrice-haessal-dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/sunrice-haessal/back
-    newTag: dev-0
+    newTag: dev-1
