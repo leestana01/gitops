@@ -33,3 +33,10 @@ data:
   ADS_BANNER_ENABLED: "false"
   ADS_BANNER_CREDITS_AD_GROUP_ID: ""
   ADS_BANNER_HISTORY_AD_GROUP_ID: ""
+  # 결제 알림 메일. OCI Email Delivery 직접 릴레이 — 승인 발신자(no-reply@klr.kr)만 통과한다.
+  # 자격(SMTP_USER/SMTP_PASSWORD)은 Secret leeshvideo-back-secrets 에 있다.
+  # 사용자에게 가는 메일이 아니라 운영자가 결제 사실을 즉시 알기 위한 내부 알림이다.
+  SMTP_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
+  SMTP_PORT: "587"
+  APP_MAIL_FROM: "no-reply@klr.kr"
+  APP_MAIL_TO: "leestana01@naver.com"
