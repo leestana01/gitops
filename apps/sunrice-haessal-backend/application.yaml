@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sunrice-haessal-backend
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /apps/sunrice-haessal-backend
+    notifications.argoproj.io/subscribe.on-deployed.discord: ""
+    notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
+    notifications.argoproj.io/subscribe.on-sync-failed.discord: ""
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/leestana01/gitops.git
+    targetRevision: main
+    path: apps/sunrice-haessal-backend/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sunrice-haessal
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

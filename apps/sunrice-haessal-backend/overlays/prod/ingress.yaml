@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sunrice-haessal-back
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.sunricehaessal.klr.kr
+      secretName: api-sunricehaessal-klr-kr-tls
+  rules:
+    - host: api.sunricehaessal.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sunrice-haessal-back
+                port:
+                  number: 8080

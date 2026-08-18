@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sunrice-haessal-back-config
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  TZ: "Asia/Seoul"
+  DB_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/sunrice_haessal?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+  DB_USERNAME: "sunrice_haessal"
+  INSTAGRAM_API_BASE_URL: "https://graph.instagram.com/v24.0"
+  INSTAGRAM_SYNC_INTERVAL_SECONDS: "300"
+  INSTAGRAM_MAXIMUM_SYNC_PAGES: "20"

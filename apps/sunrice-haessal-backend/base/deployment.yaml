@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sunrice-haessal-back
+  labels:
+    app: sunrice-haessal-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sunrice-haessal-back
+  template:
+    metadata:
+      labels:
+        app: sunrice-haessal-back
+    spec:
+      containers:
+        - name: sunrice-haessal-back
+          image: yny.ocir.io/axlgn2n9ijoa/sunrice-haessal/back
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: sunrice-haessal-back-config
+            - secretRef:
+                name: sunrice-haessal-back-secrets
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          startupProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8080 }
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8080 }
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec: { command: ["sh", "-c", "sleep 5"] }
+      terminationGracePeriodSeconds: 45
+      imagePullSecrets:
+        - name: ocir-secret
