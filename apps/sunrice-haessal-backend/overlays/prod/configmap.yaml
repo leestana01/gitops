@@ -18,3 +18,9 @@ data:
   FEEDING_SKU_5000: "ait.0000064918.af89c666.69e171d735.7065986544"
   FEEDING_SKU_10000: "ait.0000064918.558c84e2.446891bf87.7065996493"
   STICKER_BUCKET_PUBLIC_URL: https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axlgn2n9ijoa/b/sunrice-haessal-stickers/o/
+  # 먹이 알림 메일. OCI Email Delivery 직접 릴레이 — 승인 발신자(no-reply@klr.kr)만 통과한다.
+  # 자격(SMTP_USER/SMTP_PASSWORD)은 Secret sunrice-haessal-back-secrets 에 있다.
+  SMTP_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
+  SMTP_PORT: "587"
+  APP_MAIL_FROM: "no-reply@klr.kr"
+  APP_MAIL_TO: "leestana01@naver.com"
