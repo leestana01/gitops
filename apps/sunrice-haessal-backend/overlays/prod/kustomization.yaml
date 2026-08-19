@@ -7,4 +7,4 @@ resources:
 namespace: sunrice-haessal
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/sunrice-haessal/back
-    newTag: prod-13
+    newTag: prod-14
