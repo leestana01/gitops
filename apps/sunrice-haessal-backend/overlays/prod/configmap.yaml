@@ -5,7 +5,7 @@ metadata:
 data:
   SPRING_PROFILES_ACTIVE: "prod"
   TZ: "Asia/Seoul"
-  DB_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/sunrice_haessal?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
+  DB_URL: "jdbc:mysql://heatwave-mysql.subnetprivate02.armvcn.oraclevcn.com:3306/sunrice_haessal?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=Asia/Seoul&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8"
   DB_USERNAME: "sunrice_haessal"
   INSTAGRAM_API_BASE_URL: "https://graph.instagram.com/v24.0"
   INSTAGRAM_BUSINESS_ACCOUNT_ID: "17841478900922175"
