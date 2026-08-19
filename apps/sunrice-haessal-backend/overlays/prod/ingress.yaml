@@ -4,6 +4,10 @@ metadata:
   name: sunrice-haessal-back
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # 스티커·광고 사진 업로드. nginx 기본 1m 는 휴대폰 사진에 못 미쳐
+    # 앱에 닿기 전에 413 으로 잘리고, 그 응답엔 CORS 헤더가 없어 브라우저에는
+    # "Failed to fetch" 로 보인다. 앱의 multipart 상한(5MB)보다 조금 넉넉히 준다.
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
 spec:
   ingressClassName: nginx
   tls:
