@@ -14,6 +14,12 @@ data:
   ARK_BASE_URL: "https://ark.ap-southeast.bytepluses.com/api/v3"
   ARK_MODEL_ID: "dreamina-seedance-2-0-260128"
   ARK_MODEL_ID_FAST: "dreamina-seedance-2-0-fast-260128"
+  # MiniMax H3 연동 (D-053). MINIMAX_API_KEY는 secret.
+  # SEEDANCE_PROVIDER는 "실 API인가 mock인가"만 정하고, 어느 API로 나갈지는 모델이 정한다
+  # (seedance-2.0* → ModelArk / minimax-h3 → MiniMax).
+  # 키가 없으면 스튜디오에서 해당 모델이 숨겨지므로 코드 선배포가 안전하다.
+  MINIMAX_BASE_URL: "https://api.minimax.io/v2"
+  MINIMAX_MODEL_ID: "MiniMax-H3"
   # 이메일 발송 — OCI Email Delivery 직접 릴레이 (승인 발신자 no-reply@klr.kr)
   SMTP_HOST: "smtp.email.ap-chuncheon-1.oci.oraclecloud.com"
   SMTP_PORT: "587"
