@@ -8,7 +8,7 @@ namespace: leeshfield-dev
 nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/leeshfield/app
-    newTag: dev-11
+    newTag: dev-13
 # MCP dev 검증을 위해 재기동 (중지 시 count를 0으로)
 replicas:
   - name: leeshfield
