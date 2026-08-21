@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leeshfield-mcp
+  labels:
+    app: leeshfield-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: leeshfield-mcp
+  template:
+    metadata:
+      labels:
+        app: leeshfield-mcp
+    spec:
+      containers:
+        - name: leeshfield-mcp
+          image: yny.ocir.io/axlgn2n9ijoa/leeshfield-mcp/app
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: leeshfield-mcp-config
+            - secretRef:
+                name: leeshfield-mcp-secrets
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "96Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: ocir-secret

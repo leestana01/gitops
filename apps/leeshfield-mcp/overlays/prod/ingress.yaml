@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leeshfield-mcp
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # upload_asset이 base64 본문을 받으므로 본체와 동일 한도
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - leeshfield-mcp.klr.kr
+      secretName: leeshfield-mcp-klr-kr-tls
+  rules:
+    - host: leeshfield-mcp.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: leeshfield-mcp
+                port:
+                  number: 3000
