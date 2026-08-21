@@ -9,3 +9,7 @@ nameSuffix: -dev
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/leeshfield-mcp/app
     newTag: dev-1
+# leeshfield dev 중지 상태라 함께 중지 — dev 검증 시 둘 다 1로
+replicas:
+  - name: leeshfield-mcp
+    count: 0
