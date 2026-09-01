@@ -7,4 +7,4 @@ resources:
 namespace: leeshfield-mcp
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/leeshfield-mcp/app
-    newTag: prod-6
+    newTag: prod-7
