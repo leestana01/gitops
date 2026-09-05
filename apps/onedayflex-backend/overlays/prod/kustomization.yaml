@@ -4,7 +4,16 @@ resources:
   - ../../base
   - configmap.yaml
   - ingress.yaml
+  - pdb.yaml
 namespace: onedayflex
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/back
     newTag: prod-74
+replicas:
+  - name: onedayflex-back
+    count: 2
+patches:
+  - path: ha-patch.yaml
+    target:
+      kind: Deployment
+      name: onedayflex-back

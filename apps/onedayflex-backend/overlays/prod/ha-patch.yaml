@@ -1,0 +1,20 @@
+# prod 다중화: 노드 정비(드레인) 중에도 결제/구독 API 가 끊기지 않도록 2 replica 를
+# 서로 다른 노드에 분산시킨다. required 가 아니라 preferred 인 이유는, 노드가 2대인
+# 구간에서 required 를 쓰면 롤링 배포의 surge 파드가 스케줄되지 못해 배포가 멈추기
+# 때문이다. preferred 로도 스케줄러가 사실상 항상 분산시킨다.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onedayflex-back
+spec:
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: onedayflex-back
