@@ -14,6 +14,7 @@ spec:
       labels:
         app: onedayflex-admin
     spec:
+      priorityClassName: service-standard
       containers:
         - name: onedayflex-admin
           image: yny.ocir.io/axlgn2n9ijoa/onedayflex/admin

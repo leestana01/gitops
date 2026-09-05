@@ -1,0 +1,33 @@
+# 자원 압박 시 무엇을 먼저 포기할지 정하는 등급.
+# 값이 낮을수록 먼저 축출되고, 스케줄 경합에서 밀린다.
+# Jenkins 빌드(kaniko) 파드는 priorityClassName 을 지정하지 않아 0 이 되므로,
+# 아래 등급을 부여받은 모든 서비스보다 자동으로 낮다. Jenkins 설정을 건드리지
+# 않고도 "빌드가 서비스를 밀어내지 못한다"가 보장된다.
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: revenue-critical
+value: 1000000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "실사용자 결제/구독 경로. onedayflex API·프론트와 외부 진입점(ingress)."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: service-standard
+value: 10000
+globalDefault: false
+preemptionPolicy: PreemptLowerPriority
+description: "일반 서비스 워크로드. 빌드보다 우선하되 결제 경로에는 양보한다."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: build-low
+value: -100
+globalDefault: false
+# 빌드가 실행 중인 서비스를 절대 밀어내지 못하게 한다.
+preemptionPolicy: Never
+description: "CI 빌드. 어떤 것도 선점하지 않으며 가장 먼저 축출된다."

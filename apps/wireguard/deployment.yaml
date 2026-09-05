@@ -15,6 +15,7 @@ spec:
       labels:
         app: wg-easy
     spec:
+      priorityClassName: service-standard
       containers:
         - name: wg-easy
           image: ghcr.io/wg-easy/wg-easy:latest
@@ -51,7 +52,7 @@ spec:
           resources:
             requests:
               memory: "64Mi"
-              cpu: "50m"
+              cpu: "25m"
             limits:
               memory: "256Mi"
               cpu: "200m"

@@ -15,6 +15,7 @@ spec:
       labels:
         app: mail-server
     spec:
+      priorityClassName: service-standard
       containers:
         - name: mail-server
           image: docker.io/stalwartlabs/stalwart:v0.15.5
@@ -42,7 +43,7 @@ spec:
           resources:
             requests:
               memory: "256Mi"
-              cpu: "100m"
+              cpu: "50m"
             limits:
               memory: "512Mi"
               cpu: "500m"

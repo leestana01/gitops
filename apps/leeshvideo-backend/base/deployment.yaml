@@ -14,6 +14,7 @@ spec:
       labels:
         app: leeshvideo-back
     spec:
+      priorityClassName: service-standard
       containers:
         - name: leeshvideo-back
           image: yny.ocir.io/axlgn2n9ijoa/leeshvideo/back

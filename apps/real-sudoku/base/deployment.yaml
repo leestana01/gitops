@@ -19,6 +19,7 @@ spec:
       labels:
         app: real-sudoku-web
     spec:
+      priorityClassName: service-standard
       # NFS export 가 no_root_squash 라 kubelet 이 subPath 디렉토리를 root 로 만든다.
       # 비root 앱(uid 1001)이 쓸 수 있도록 initContainer(root)로 소유권을 맞춘다.
       initContainers:
@@ -71,7 +72,7 @@ spec:
               subPathExpr: $(DATA_SUBPATH)
           resources:
             requests:
-              cpu: "150m"
+              cpu: "50m"
               memory: "256Mi"
             limits:
               # 퍼즐 생성(특히 MASTER)이 요청 스레드에서 CPU 버스트를 낸다.

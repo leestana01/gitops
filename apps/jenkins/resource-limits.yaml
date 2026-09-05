@@ -1,0 +1,51 @@
+# Jenkins 빌드 격리.
+#
+# 배경: Jenkins 컨트롤러는 numExecutors=0 이고 모든 빌드가 kubernetes 플러그인의
+# kaniko PodTemplate 으로 동적 생성된다. 그 PodTemplate 에는 resourceRequest/Limit 이
+# 하나도 설정돼 있지 않아 빌드 파드가 BestEggort 로 뜨고, request 가 0 이라 스케줄러가
+# 용량과 무관하게 어디든 배치한 뒤 노드의 남은 CPU·메모리를 무제한으로 먹는다.
+# instanceCap 도 2147483647(무제한)이라 동시 빌드 수에도 상한이 없다.
+#
+# Jenkins config.xml 은 UI 로 만들어진 유일본이라 직접 수정이 위험하므로,
+# 네임스페이스 레벨에서 쿠버네티스가 강제하게 한다. 이러면 Jenkins 를 어떻게
+# 재설정하든 빌드는 이 울타리를 벗어날 수 없다.
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: jenkins-build-limits
+  namespace: jenkins
+spec:
+  limits:
+    - type: Container
+      # 리소스를 명시하지 않은 컨테이너(=kaniko 빌드 파드)에 자동 적용된다.
+      # 이미 명시한 컨테이너(젠킨스 컨트롤러)는 영향받지 않는다.
+      defaultRequest:
+        cpu: "200m"
+        memory: "512Mi"
+      default:
+        cpu: "1000m"
+        memory: "2Gi"
+      # request 200m 은 노드 경합 시 지분을 11% 로 묶는다. 평소 노드가 한가할 때는
+      # limit 1000m 까지 자유롭게 써서 빌드 속도를 확보한다.
+      max:
+        cpu: "1500m"
+        memory: "3Gi"
+      min:
+        cpu: "50m"
+        memory: "64Mi"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: jenkins-quota
+  namespace: jenkins
+spec:
+  # 동시 빌드 총량 상한. 빌드가 몰려도 클러스터 전체를 잠식하지 못한다.
+  # 초과분은 파드 생성이 거부되어 Jenkins 큐에서 대기한다(서비스에는 무영향).
+  hard:
+    requests.cpu: "1"
+    requests.memory: "4Gi"
+    limits.cpu: "6"
+    limits.memory: "10Gi"
+    pods: "6"
