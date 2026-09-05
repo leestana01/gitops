@@ -43,7 +43,8 @@ notifications:
         value: application/json
 
   templates:
-    # 최초 sync 성공 + Healthy 상태 진입 시 1회. oncePer 로 동일 revision 중복 알림 방지.
+    # 최초 sync 성공 + Healthy 상태 진입 시 1회. oncePer 로 동일 revision 중복 알림 방지
+    # (키는 공유 레포 HEAD 가 아니라 그 앱이 실제 sync 한 리비전이어야 한다).
     template.app-deployed: |
       webhook:
         discord:
@@ -115,7 +116,12 @@ notifications:
     # 동일 알림이 스팸되지 않게 한다.
     trigger.on-deployed: |
       - when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
-        oncePer: app.status.sync.revision
+        # oncePer 는 app.status.sync.revision 이면 안 된다. 그건 앱 고유 값이 아니라
+        # 16개 앱이 공유하는 gitops 레포의 HEAD 라서, 어느 앱을 빌드하든 커밋 하나에
+        # 모든 앱의 값이 새 SHA 로 바뀌고 전 앱이 알림을 쏜다(infra/ 만 고친 커밋에도 발송됨).
+        # syncResult.revision 은 그 앱이 실제로 sync 오퍼레이션을 수행한 리비전이고,
+        # 매니페스트가 안 바뀐 앱은 오퍼레이션 자체가 안 생겨 값이 그대로 유지된다.
+        oncePer: app.status.operationState.syncResult.revision
         send: [app-deployed]
 
     trigger.on-sync-failed: |
