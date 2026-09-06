@@ -8,7 +8,7 @@ resources:
 namespace: onedayflex
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/back
-    newTag: prod-78
+    newTag: prod-79
 replicas:
   - name: onedayflex-back
     count: 2
