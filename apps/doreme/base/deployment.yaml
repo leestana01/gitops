@@ -21,7 +21,7 @@ spec:
         runAsGroup: 101
       containers:
         - name: web
-          image: nginxinc/nginx-unprivileged:1.29-alpine
+          image: docker.io/nginxinc/nginx-unprivileged:1.29-alpine
           ports:
             - name: http
               containerPort: 8080
