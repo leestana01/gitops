@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-project
+spec:
+  selector:
+    app: test-project
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

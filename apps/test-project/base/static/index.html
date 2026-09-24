@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5ec">
+  <meta name="description" content="오늘을 조금 더 재미있게 만드는 1분 랜덤 미션">
+  <title>오늘의 우연 연구소</title>
+  <style>
+    :root { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1d2927; background: #f8f5ec; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 90% 4%, #ffe0a5 0, transparent 25%), radial-gradient(circle at 4% 82%, #c9e8de 0, transparent 28%), #f8f5ec; }
+    button { font: inherit; cursor: pointer; }
+    .wrap { width: min(1100px, calc(100% - 40px)); margin: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; gap: 12px; }
+    .brand { display: flex; gap: 10px; align-items: center; font-weight: 900; letter-spacing: -.05em; font-size: 20px; }
+    .brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: #1d2927; color: #fff; transform: rotate(-8deg); }
+    .header-note { border: 1px solid #1d2927; border-radius: 100px; padding: 8px 14px; font-size: 12px; font-weight: 800; background: #fffdf7; white-space: nowrap; }
+    main { padding-top: 55px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 7px; background: #def5a7; border: 1px solid #1d2927; border-radius: 100px; padding: 8px 13px; font-size: 12px; font-weight: 900; letter-spacing: .04em; box-shadow: 3px 3px 0 #1d2927; }
+    h1 { font-size: clamp(49px, 8vw, 94px); line-height: 1.04; letter-spacing: -.085em; margin: 29px 0 22px; max-width: 820px; }
+    h1 em { font-style: normal; position: relative; color: #f2734d; }
+    .intro { font-size: clamp(17px, 2vw, 21px); line-height: 1.65; color: #58625d; margin: 0 0 36px; }
+    .board { display: grid; grid-template-columns: 1.12fr .88fr; gap: 22px; margin-bottom: 24px; }
+    .machine, .side-card { border: 2px solid #1d2927; border-radius: 26px; box-shadow: 8px 8px 0 #1d2927; }
+    .machine { background: #f9b9a7; padding: 28px; min-height: 390px; display: flex; flex-direction: column; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; font-weight: 900; font-size: 13px; letter-spacing: .04em; }
+    .lights { display: flex; gap: 6px; }
+    .lights span { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #1d2927; background: #f7e6bb; }
+    .lights span:first-child { background: #f27862; }
+    .lights span:nth-child(2) { background: #f9d25c; }
+    .lights span:last-child { background: #a2d7a4; }
+    .screen { flex: 1; display: grid; place-content: center; text-align: center; margin: 22px 0; padding: 22px; border: 2px solid #1d2927; border-radius: 17px; background: #fffcf3; min-height: 214px; }
+    .symbol { display: block; font-size: 51px; line-height: 1; margin-bottom: 16px; }
+    .screen h2 { margin: 0; font-size: clamp(23px, 3vw, 34px); line-height: 1.3; letter-spacing: -.05em; }
+    .screen p { margin: 12px auto 0; color: #52615b; font-size: 15px; line-height: 1.5; max-width: 350px; }
+    .primary { border: 2px solid #1d2927; background: #1d2927; color: white; border-radius: 13px; min-height: 57px; padding: 12px 20px; font-weight: 900; font-size: 17px; transition: transform .15s, box-shadow .15s; }
+    .primary:hover, .secondary:hover { transform: translateY(-3px); box-shadow: 0 5px 0 #1d2927; }
+    .primary:active, .secondary:active { transform: translateY(1px); box-shadow: none; }
+    .primary:focus-visible, .secondary:focus-visible { outline: 3px solid #276bb8; outline-offset: 3px; }
+    .side { display: grid; gap: 22px; }
+    .side-card { background: #d6e9e1; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; }
+    .side-card.yellow { background: #f9de82; }
+    .small-label { font-size: 12px; font-weight: 900; letter-spacing: .08em; }
+    .side-card h3 { margin: 13px 0 4px; font-size: clamp(23px, 3vw, 31px); letter-spacing: -.055em; line-height: 1.24; }
+    .side-card p { margin: 5px 0 0; color: #51615b; line-height: 1.5; font-size: 14px; }
+    .secondary { width: fit-content; margin-top: 15px; padding: 9px 16px; border: 1.5px solid #1d2927; background: #fffdf7; border-radius: 9px; font-size: 13px; font-weight: 900; transition: transform .15s, box-shadow .15s; }
+    .yellow .secondary { background: #fff8d9; }
+    .bottom { display: flex; justify-content: space-between; gap: 20px; align-items: center; border-top: 1px solid #c6c9bd; padding: 24px 0 40px; font-size: 13px; color: #66706a; }
+    .bottom strong { color: #1d2927; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 18px); background: #1d2927; color: white; padding: 11px 17px; border-radius: 100px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; font-size: 14px; z-index: 10; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .pop { animation: pop .4s ease-out; }
+    @keyframes pop { 0% { transform: scale(.9) rotate(-3deg); opacity: .5; } 70% { transform: scale(1.04) rotate(1deg); } 100% { transform: scale(1); opacity: 1; } }
+    @media (max-width: 720px) { .wrap { width: min(100% - 28px, 550px); } header { padding: 22px 0; } main { padding-top: 30px; } h1 { margin-top: 23px; } .board { grid-template-columns: 1fr; gap: 18px; } .machine { padding: 18px; min-height: 350px; } .side { grid-template-columns: 1fr 1fr; gap: 14px; } .side-card { padding: 18px; border-radius: 20px; min-height: 215px; box-shadow: 5px 5px 0 #1d2927; } .side-card h3 { font-size: 22px; } .bottom { align-items: flex-start; } }
+    @media (max-width: 460px) { .header-note { display: none; } .side { grid-template-columns: 1fr; } .side-card { min-height: 170px; } .intro br { display: none; } .bottom { display: block; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> 오늘의 우연 연구소</div>
+      <span class="header-note">매일 1분짜리 작은 실험</span>
+    </header>
+    <main>
+      <span class="eyebrow">✦ 아무 일 없는 날을 위한 처방전</span>
+      <h1>오늘을 바꾸는<br><em>작은 우연.</em></h1>
+      <p class="intro">할 일 목록 말고, 해보고 싶은 일 하나.<br>버튼을 누르면 지금 이 순간에 어울리는 미션을 뽑아드립니다.</p>
+      <section class="board" aria-label="오늘의 우연 뽑기">
+        <div class="machine">
+          <div class="card-top"><span>THE RANDOM MACHINE · NO. 001</span><span class="lights" aria-hidden="true"><span></span><span></span><span></span></span></div>
+          <div class="screen" id="screen" aria-live="polite">
+            <span class="symbol" id="symbol" aria-hidden="true">🎲</span>
+            <h2 id="mission">무슨 일이 일어날까요?</h2>
+            <p id="detail">큰 계획은 필요 없어요. 딱 1분이면 충분합니다.</p>
+          </div>
+          <button class="primary" id="draw" type="button">오늘의 우연 뽑기 ↗</button>
+        </div>
+        <div class="side">
+          <article class="side-card">
+            <div><span class="small-label">01 / THE QUESTION</span><h3>뜻밖의 질문 하나</h3><p id="question">“최근에 나를 웃게 한 사소한 일은?”</p></div>
+            <button class="secondary" id="new-question" type="button">다른 질문 보기 ↗</button>
+          </article>
+          <article class="side-card yellow">
+            <div><span class="small-label">02 / THE SIGNAL</span><h3>오늘의 신호</h3><p id="signal">좋아하는 단어를 하나 떠올려 보세요. 오늘은 그 단어가 자주 보일지도 몰라요.</p></div>
+            <button class="secondary" id="new-signal" type="button">신호 바꾸기 ↗</button>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="bottom"><span><strong>오늘의 우연 연구소</strong> · 심심한 하루에 아주 작은 변수</span><span>정답도, 기록도, 로그인도 없습니다.</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    const missions = [
+      { icon: '☁️', title: '하늘을 30초 바라보기', detail: '구름이 없다면 하늘의 색을 세 단어로 표현해 보세요.' },
+      { icon: '🎧', title: '첫 곡을 끝까지 듣기', detail: '셔플을 누르고 첫 곡은 건너뛰지 않기. 오늘의 사운드트랙입니다.' },
+      { icon: '💬', title: '누군가에게 안부 묻기', detail: '“잘 지내?” 한마디면 충분해요. 답장은 보너스.' },
+      { icon: '📷', title: '작은 것 하나 찍기', detail: '그림자, 컵, 신발끈처럼 평소 지나쳤던 것으로요.' },
+      { icon: '🚶', title: '평소와 다른 길로 1분', detail: '목적지는 그대로. 경로만 아주 조금 바꿔 보세요.' },
+      { icon: '🍊', title: '새로운 간식 고르기', detail: '늘 고르던 것 옆에 있던 처음 보는 맛에 도전!' },
+      { icon: '✍️', title: '오늘을 한 문장으로', detail: '멋있을 필요는 없어요. 지금 떠오르는 그대로 적어보세요.' },
+      { icon: '🌱', title: '초록색 세 가지 찾기', detail: '주변을 천천히 살피면 생각보다 많이 숨어 있어요.' },
+      { icon: '🪟', title: '창밖에서 새로움 찾기', detail: '어제와 달라진 것을 딱 하나만 찾아보세요.' },
+      { icon: '💧', title: '물 한 잔 천천히 마시기', detail: '휴대폰은 잠깐 내려놓고, 첫 모금에 집중해 보세요.' }
+    ];
+    const questions = [
+      '“최근에 나를 웃게 한 사소한 일은?”', '“지금 당장 가고 싶은 곳은 어디일까?”', '“오늘의 기분을 색으로 표현한다면?”', '“어릴 때 좋아하던 놀이는 무엇이었지?”', '“요즘 나에게 가장 필요한 한마디는?”', '“이번 주에 처음 해본 일은 무엇일까?”'
+    ];
+    const signals = [
+      '좋아하는 단어를 하나 떠올려 보세요. 오늘은 그 단어가 자주 보일지도 몰라요.',
+      '빨간색을 발견하면 잠깐 멈춰 보세요. 그 순간을 기억하는 것이 오늘의 실험입니다.',
+      '오늘 들은 첫 웃음소리를 기억해 보세요. 좋은 하루의 시작 신호일지도 몰라요.',
+      '우연히 마주친 숫자 하나를 골라 보세요. 오늘만의 비밀 코드입니다.',
+      '지나가는 바람이 느껴지면 깊게 한 번 숨 쉬어 보세요. 잠깐의 리셋입니다.'
+    ];
+    let previous = -1;
+    function pick(items, previousIndex) {
+      if (items.length === 1) return 0;
+      let index;
+      do { index = Math.floor(Math.random() * items.length); } while (index === previousIndex);
+      return index;
+    }
+    function animate(element) { element.classList.remove('pop'); void element.offsetWidth; element.classList.add('pop'); }
+    document.getElementById('draw').addEventListener('click', () => {
+      previous = pick(missions, previous);
+      const chosen = missions[previous];
+      document.getElementById('symbol').textContent = chosen.icon;
+      document.getElementById('mission').textContent = chosen.title;
+      document.getElementById('detail').textContent = chosen.detail;
+      animate(document.getElementById('screen'));
+      document.getElementById('draw').textContent = '한 번 더 뽑기 ↗';
+    });
+    for (const [buttonId, textId, items] of [['new-question', 'question', questions], ['new-signal', 'signal', signals]]) {
+      let last = 0;
+      document.getElementById(buttonId).addEventListener('click', () => {
+        last = pick(items, last);
+        const target = document.getElementById(textId);
+        target.textContent = items[last];
+        animate(target);
+      });
+    }
+  </script>
+</body>
+</html>
