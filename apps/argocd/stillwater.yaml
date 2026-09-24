@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stillwater
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /apps/stillwater
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/leestana01/gitops.git
+    targetRevision: main
+    path: apps/stillwater/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stillwater
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

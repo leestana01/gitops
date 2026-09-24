@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d1822">
+  <meta name="description" content="고요한 호수에서 낚싯줄을 던지고, 기다리고, 작은 발견을 기록하세요.">
+  <title>잔물결 — 조용한 낚시</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main class="game" aria-label="잔물결 낚시 게임">
+    <canvas id="scene" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">◌</span><div><strong>잔물결</strong><small>STILLWATER</small></div></div>
+      <div class="top-actions">
+        <button class="icon-button" id="sound" type="button" aria-label="소리 켜기" aria-pressed="false" title="소리 켜기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="sound-wave" d="M17 9a4 4 0 0 1 0 6m2.5-9a8 8 0 0 1 0 12"/></svg></button>
+        <button class="journal-button" id="journal-open" type="button"><span class="journal-symbol" aria-hidden="true">◫</span> 기록 <span id="journal-badge">0</span></button>
+      </div>
+    </header>
+    <div class="top-copy"><span class="eyebrow">A QUIET PLACE TO STAY</span><h1>오늘은, 물가에.</h1><p>아무것도 서두르지 않아도 되는 시간.</p></div>
+    <div class="horizon-label" aria-hidden="true"><span class="line"></span><span id="time-label">해질녘의 호수</span><span class="line"></span></div>
+    <section class="play-panel" aria-label="낚시 조작">
+      <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="status" aria-live="polite">물결이 잔잔합니다</span></div>
+      <div class="reel-ui" id="reel-ui" hidden><div class="reel-heading"><span>줄 감기</span><span id="reel-percent">0%</span></div><div class="meter"><div id="progress-fill"></div></div><div class="tension-heading"><span>줄의 긴장도</span><span id="tension-hint">누르고 떼며 조절하세요</span></div><div class="tension-meter"><div class="danger-zone"></div><div id="tension-fill"></div></div></div>
+      <button class="action-button" id="action" type="button"><span id="action-icon" aria-hidden="true">↗</span><span id="action-text">낚싯줄 던지기</span></button>
+      <p class="instruction" id="instruction">버튼을 누르거나 스페이스바를 사용하세요</p>
+    </section>
+    <div class="bottom-left"><span class="tiny-mark">✳</span> 잠시 머무는 낚시</div>
+    <div class="bottom-right" id="catch-count">발견 0</div>
+  </main>
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="journal" id="journal" aria-label="낚시 기록" aria-hidden="true"><div class="drawer-head"><div><span class="eyebrow">FIELD NOTES</span><h2>낚시 기록</h2></div><button class="close-button" id="journal-close" type="button" aria-label="기록 닫기">×</button></div><p class="drawer-intro">호수가 건네준 작은 발견들.</p><div class="journal-stats"><div><strong id="total-catches">0</strong><span>잡은 물고기</span></div><div><strong id="species-count">0 / 8</strong><span>만난 종류</span></div></div><div class="species-list" id="species-list"></div><p class="drawer-foot">기록은 이 기기에 저장됩니다.</p></aside>
+  <div class="catch-overlay" id="catch-overlay" hidden><div class="catch-card" role="dialog" aria-modal="true" aria-labelledby="catch-title"><span class="eyebrow">A LITTLE DISCOVERY</span><div class="fish-art" id="fish-art" aria-hidden="true"></div><span class="catch-kicker" id="catch-kicker">새로운 발견</span><h2 id="catch-title">붕어</h2><p id="catch-description"></p><div class="catch-detail"><span id="catch-size">23.4 cm</span><span id="catch-rarity">흔한 물고기</span></div><button id="catch-close" type="button">다시 물가로 <span aria-hidden="true">↗</span></button></div></div>
+</body>
+</html>
