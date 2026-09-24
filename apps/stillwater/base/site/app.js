@@ -12,40 +12,72 @@
     {id:'moon',name:'달빛고기',rarity:'전설',weight:.5,min:18,max:42}
   ];
   const noteData={
-    first:['놋쇠 조각','첫 물고기의 아가미에 작은 놋쇠 조각이 걸려 있었다.'],
-    bench:['작업대','물가에 오래된 작업대가 있다. 누군가 아직 쓰는 것처럼 말끔하다.'],
-    reeds:['갈대','바람이 멎었는데도 건너편 갈대가 흔들렸다.'],
-    trap:['통발','물살은 한 방향인데, 떠오른 통발은 반대로 흘렀다.'],
-    roof:['지붕','어제는 없던 지붕이 수면 위로 드러났다.'],
-    channel:['수로','갈대 뒤에 물길이 있다. 작은 배 한 척이 지나갈 만하다.'],
-    houses:['잠긴 집','집마다 문이 열려 있다. 누군가 급히 떠난 흔적은 없다.'],
-    lamp:['등불','유리 안쪽에 오래된 지도가 새겨져 있다. 불을 켜자 길이 보였다.'],
-    beacon:['등대','꺼진 등대에서 종소리가 났다. 소리는 위가 아니라 물 아래에서 올라온다.'],
-    gate:['수문','오래전 이곳 사람들은 물을 막은 것이 아니었다. 무엇인가를 물속에 남겨 두었다.'],
-    return:['다시 물가에','호수는 아무 일도 없었다는 듯 잔잔하다. 그러나 이제 물결 아래의 길을 안다.']
+    first:['내일의 표식','첫 물고기의 아가미에 놋쇠 표식이 걸려 있었다. 날짜는 내일, 이름은 당신의 것이다.'],
+    bench:['아버지의 작업대','작업대 위 공책에는 아버지의 글씨로 한 줄이 남아 있다. “호수가 건네는 것을 버리지 마라.”'],
+    reeds:['거슬러 오르는 물','바람이 멈췄는데 갈대가 흔들렸다. 물은 아주 잠깐, 언덕 쪽으로 흘렀다.'],
+    trap:['통발의 이름표','통발에 물고기보다 먼저 이름표가 걸렸다. 모두 이 호수에 잠긴 집들의 이름이다.'],
+    roof:['물 위의 지붕','어제는 없던 지붕이 수면 위로 드러났다. 창가에는 마르지 않은 불빛이 있다.'],
+    boat:['떠 있는 배','배 밑에서 작은 종소리가 울렸다. 건너편에는 누군가 남겨 둔 길이 있다.'],
+    channelSignal:['젖지 않은 종이','갈대에서 잡은 물고기 비늘 아래 종이 한 장이 있었다. 종이는 물에 젖지 않았다.'],
+    channel:['주소','종이에는 잠긴 집들의 주소가 적혀 있다. 마지막 주소는 당신이 살던 집이다.'],
+    housesSignal:['열린 문','집마다 문이 열려 있다. 사람이 떠난 흔적은 없고, 벽에는 키를 재던 눈금이 남아 있다.'],
+    houses:['식탁의 문장','모든 식탁에 같은 문장이 적혀 있다. “종이 울리면 이름을 부르지 마.” 가족사진에서는 한 사람의 얼굴만 사라졌다.'],
+    lamp:['유리 등불','오래된 유리 안쪽에 지도가 새겨져 있다. 불을 켜자 등대로 이어지는 물길이 나타났다.'],
+    beaconSignal:['첫 번째 종소리','등대에서 건진 물고기의 입에 작은 종추가 있었다. 물 위에는 종이 없다.'],
+    beacon:['등대의 기록','물이 찬 날 이후에도 아버지는 스물일곱 해 동안 매일 종을 울렸다. 누군가 지워질 때마다, 이름 하나가 호수에 남도록.'],
+    gateSignal:['수문 아래','수문의 안쪽에서 당신 이름의 표식이 흔들린다. 내일이라 적혔던 날짜가 오늘로 바뀌었다.'],
+    gate:['두 개의 물길','수문을 열면 잊힌 이름이 돌아가고 호수는 물러난다. 닫으면 이름은 물결 아래에 남는다. 아버지는 어느 쪽도 정답이라 쓰지 않았다.'],
+    afterOpen:['드러난 지붕','새벽에 집들의 지붕이 드러났다. 사람들은 오래 잊었던 이름을 불렀다. 아버지의 이름도 있었다. 돌아온 것은 목소리뿐이었다.'],
+    afterSeal:['남겨 둔 이름','종이 한 번 더 울렸다. 바깥의 사람들은 아무것도 기억하지 못한다. 당신은 이름들을 하나씩 낚아 올려 공책에 적는다.']
   };
-  const makeState=()=>({version:2,location:'shore',casts:0,fish:0,wood:0,scrap:0,supply:0,glass:0,flags:{hook:false,net:false,net2:false,boat:false,lamp:false},visits:{channel:0,houses:0,beacon:0,gate:0},catches:{},notes:[],lastTick:Date.now()});
-  const key='stillwater:world:v2';let state=makeState();
-  try {const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&saved.version===2){state={...state,...saved,flags:{...state.flags,...saved.flags},visits:{...state.visits,...saved.visits},catches:saved.catches||{},notes:Array.isArray(saved.notes)?saved.notes:[]};}else{const old=JSON.parse(localStorage.getItem('stillwater:journal:v1')||'{}');if(old&&typeof old==='object'){state.catches=old;state.fish=Object.values(old).reduce((n,r)=>n+(Number(r.count)||0),0);}}}catch(_){state=makeState()}
+  const chapterData={
+    bench:{kicker:'THE FIRST THREAD',title:'내일이 적힌 표식',lines:['첫 물고기의 아가미에 작은 놋쇠 표식이 걸려 있었다. 날짜는 내일, 이름은 당신의 것이다.','물가의 작업대에는 아버지의 공책이 놓여 있다. 마지막 문장은 “호수가 건네는 것을 버리지 마라.”']},
+    channel:{kicker:'THE REED CHANNEL',title:'돌아오는 주소',lines:['갈대에서 건진 물고기 비늘 아래, 젖지 않은 종이가 있었다. 물에 잠긴 집들의 주소가 적혀 있다.','마지막 주소는 당신이 살던 집이다.']},
+    houses:{kicker:'THE DROWNED HOUSES',title:'이름을 부르지 마',lines:['물에 잠긴 집마다 같은 문장이 남아 있다. “종이 울리면 이름을 부르지 마.”','가족사진에서 얼굴 하나가 사라졌다. 그런데 사진 속 사람들의 시선은 모두 당신을 향한다.']},
+    beacon:{kicker:'THE DARK BEACON',title:'스물일곱 해의 종소리',lines:['등대 기록에는 물이 찬 날 이후의 날짜가 이어진다. 아버지는 스물일곱 해 동안 매일 종을 울렸다.','누군가 지워질 때마다 이름 하나가 물에 남았다. 마지막 줄에는 “수문을 열기 전, 아래에 남은 사람을 보아라.”']},
+    gate:{kicker:'THE LOCKED GATE',title:'어느 쪽도 정답은 아니다',lines:['수문 아래에 당신 이름의 표식이 걸려 있다. 내일이라 새겨졌던 날짜가 오늘로 바뀌었다. 아버지는 잊힌 사람들의 이름을 스물일곱 해 동안 이 물속에 붙잡아 두었다.','수문을 열면 이름은 살아 있는 사람들에게 돌아가지만, 호수의 기록은 사라진다. 닫으면 이름은 보존되지만 아무도 그들을 기억하지 못한다. 다음 종을 울릴 사람은 당신이다.']},
+    afterOpen:{kicker:'THE WATER RECEDED',title:'기억이 돌아온 아침',lines:['새벽에 물이 물러나자 사람들은 잊었던 이름들을 입 밖에 냈다. 집과 길은 돌아왔지만, 그 이름의 주인들은 돌아오지 않았다.','아버지의 이름을 부르는 목소리가 들린다. 호수에 남겨 둔 기록은 사라졌다. 이제 당신이 기억할 차례다.']},
+    afterSeal:{kicker:'THE NAMES BELOW',title:'다음 종을 울리는 사람',lines:['종이 울린 뒤에도 바깥의 사람들은 아무것도 기억하지 못한다. 호수는 잊힌 이름들을 그대로 품는다.','아버지의 공책 마지막 장은 비어 있었다. 당신은 오늘 건진 이름부터 적는다. 물 아래에서 새 표식 하나가 반짝인다.']}
+  };
+  const makeState=()=>({version:2,location:'shore',ending:null,storySeen:[],siteCatches:{shore:0,channel:0,houses:0,beacon:0,gate:0},casts:0,fish:0,wood:0,scrap:0,supply:0,glass:0,flags:{hook:false,net:false,net2:false,boat:false,lamp:false},visits:{channel:0,houses:0,beacon:0,gate:0},catches:{},notes:[],lastTick:Date.now()});
+  const key='stillwater:world:v2';let state=makeState(),legacyWorld=false;
+  try {const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&saved.version===2){legacyWorld=!saved.siteCatches;state={...state,...saved,flags:{...state.flags,...saved.flags},visits:{...state.visits,...saved.visits},siteCatches:{...state.siteCatches,...saved.siteCatches},catches:saved.catches||{},notes:Array.isArray(saved.notes)?saved.notes:[],storySeen:Array.isArray(saved.storySeen)?saved.storySeen:[]};}else{const old=JSON.parse(localStorage.getItem('stillwater:journal:v1')||'{}');if(old&&typeof old==='object'){state.catches=old;state.fish=Object.values(old).reduce((n,r)=>n+(Number(r.count)||0),0);}}}catch(_){state=makeState()}
   for(const k of ['casts','fish','wood','scrap','supply','glass'])state[k]=Math.max(0,Math.floor(Number(state[k])||0));
   for(const k of Object.keys(state.flags))state.flags[k]=Boolean(state.flags[k]);
   for(const k of Object.keys(state.visits))state.visits[k]=Math.max(0,Math.floor(Number(state.visits[k])||0));
+  for(const k of Object.keys(state.siteCatches))state.siteCatches[k]=Math.max(0,Math.floor(Number(state.siteCatches[k])||0));
+  if(legacyWorld){for(const k of ['channel','houses','beacon','gate'])state.siteCatches[k]=state.visits[k]>=2?2:0;state.storySeen=state.notes.filter(id=>id!=='gate');}
+  state.ending=['open','seal'].includes(state.ending)?state.ending:null;state.storySeen=state.storySeen.filter(id=>Object.prototype.hasOwnProperty.call(chapterData,id));
   state.location=['shore','channel','houses','beacon','gate'].includes(state.location)?state.location:'shore';
   state.notes=state.notes.filter(id=>Object.prototype.hasOwnProperty.call(noteData,id));
   state.catches=Object.fromEntries(species.filter(f=>state.catches[f.id]?.count).map(f=>[f.id,{count:Math.max(0,Math.floor(Number(state.catches[f.id].count)||0)),best:Math.max(0,Number(state.catches[f.id].best)||0)}]));
-  let width=0,height=0,dpr=1,lastFrame=performance.now(),castAt=0,nextRipple=0,audioCtx=null,noiseNode=null,soundOn=false,toastTimer=null,workOpen=false,journalOpen=false,phase='idle',aimAt=0,aimTarget=.5,aimWidth=.18,aimQuality=0,biteDeadline=0,biteTimer=null,fight=null,holding=false,transitionTimer=null,suppressFightClick=false;
+  let width=0,height=0,dpr=1,lastFrame=performance.now(),castAt=0,nextRipple=0,audioCtx=null,noiseNode=null,soundOn=false,toastTimer=null,workOpen=false,journalOpen=false,phase='idle',aimAt=0,aimTarget=.5,aimWidth=.18,aimQuality=0,biteDeadline=0,biteTimer=null,fight=null,holding=false,transitionTimer=null,suppressFightClick=false,ignoreClickUntil=0,storyOpen=false,currentStory=null;
   const ripples=[],motes=Array.from({length:32},()=>({x:Math.random(),y:.58+Math.random()*.39,s:Math.random()*.7+.2,p:Math.random()*6.28})),stars=Array.from({length:70},()=>({x:Math.random(),y:Math.random()*.52,r:Math.random()*1.15+.25,p:Math.random()*6.28}));
   function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch(_){}}
   function addRipple(x,y,power=1){ripples.push({x,y,age:0,power});if(ripples.length>30)ripples.shift()}
   function toast(text){const el=$('event-toast');el.textContent=text;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,3300)}
   function say(text,show=false){$('status').textContent=text;if(show)toast(text)}
-  function remember(id){if(state.notes.includes(id))return;state.notes.push(id);toast(noteData[id][1]);save();}
-  function pickFish(){const deep=state.visits.beacon>=2||['beacon','gate'].includes(state.location);let total=0;for(const s of species)total+=s.weight*(deep&&['golden','moon'].includes(s.id)?4:1);let roll=Math.random()*total;for(const s of species){roll-=s.weight*(deep&&['golden','moon'].includes(s.id)?4:1);if(roll<0)return s}return species[0]}
+  function landings(){return Object.values(state.catches).reduce((n,r)=>n+(Number(r.count)||0),0)}
+  function remember(id){if(state.notes.includes(id))return;state.notes.push(id);toast(noteData[id][1]);save();showNextStory();}
+  function showNextStory(){
+    if(storyOpen)return;const id=state.notes.find(n=>chapterData[n]&&!state.storySeen.includes(n));if(!id)return;
+    const chapter=chapterData[id];storyOpen=true;currentStory=id;
+    $('story-kicker').textContent=chapter.kicker;$('story-title').textContent=chapter.title;
+    $('story-line-one').textContent=chapter.lines[0];$('story-line-two').textContent=chapter.lines[1];
+    $('story-actions').innerHTML=id==='gate'?'<button type="button" data-story-choice="open">수문을 연다</button><button type="button" class="secondary" data-story-choice="seal">호수를 지킨다</button>':'<button type="button" data-story-choice="continue">계속</button>';
+    $('story-overlay').hidden=false;updateAction();$('story-actions').querySelector('button')?.focus();
+  }
+  function closeStory(choice){
+    if(!storyOpen||currentStory==='gate'&&!['open','seal'].includes(choice))return;
+    const id=currentStory;state.storySeen.push(id);storyOpen=false;currentStory=null;$('story-overlay').hidden=true;
+    if(id==='gate'){state.ending=choice;remember(choice==='open'?'afterOpen':'afterSeal')}
+    save();render();$('action').focus();showNextStory();
+  }
+  function pickFish(){const deep=state.siteCatches.beacon>=2||['beacon','gate'].includes(state.location);let total=0;for(const s of species)total+=s.weight*(deep&&['golden','moon'].includes(s.id)?4:1);let roll=Math.random()*total;for(const s of species){roll-=s.weight*(deep&&['golden','moon'].includes(s.id)?4:1);if(roll<0)return s}return species[0]}
   function aimPosition(now){const speed=state.location==='shore'?1120:850;return .5-.5*Math.cos((now-aimAt)*Math.PI*2/speed)}
   function beginAim(){
     if(phase!=='idle')return;phase='aiming';aimAt=performance.now();aimTarget=.25+Math.random()*.5;aimWidth=state.location==='shore'?.18:.12;
     state.casts++;if(Math.random()<.58)state.wood++;if(Math.random()<.36)state.scrap++;
-    if(state.casts===3)remember('bench');else if(state.casts===6)remember('reeds');else if(state.casts===10)remember('trap');else if(state.casts===18)remember('roof');
     save();render();$('aim-target').style.left=`${(aimTarget-aimWidth/2)*100}%`;$('aim-target').style.width=`${aimWidth*100}%`;say('물결을 읽고 던질 지점을 맞추세요');playTone(340,.12,'sine',.025);
   }
   function releaseAim(){
@@ -56,43 +88,49 @@
     clearTimeout(biteTimer);biteTimer=setTimeout(startBite,450+Math.random()*500);
   }
   function startBite(){
-    if(phase!=='waiting')return;phase='bite';biteDeadline=performance.now()+(state.location==='shore'?1040:800)+(aimQuality===2?250:0);
+    if(phase!=='waiting')return;phase='bite';biteDeadline=performance.now()+(state.location==='shore'?1350:1050)+(aimQuality===2?200:0);
     addRipple(.56,.675,2.5);playTone(760,.12,'triangle',.06);setTimeout(()=>playTone(990,.16,'triangle',.055),100);
     say('입질! 지금 챔질하세요');updateAction();
   }
   function hook(){
     if(phase!=='bite')return;phase='fight';const fish=pickFish(),rarity=species.indexOf(fish);
-    fight={fish,rarity,progress:0,tension:18,danger:0,start:performance.now(),surgeAt:performance.now()+1100+Math.random()*650,surging:false,strength:1+(rarity>=4?.24:0)+(rarity>=6?.16:0)+(state.location==='shore'?0:.15)-(aimQuality===2?.1:0)+(aimQuality===0?.15:0)};
+    fight={fish,rarity,progress:0,tension:18,danger:0,slack:0,start:performance.now(),surgeAt:performance.now()+1150+Math.random()*600,strength:1+(rarity>=4?.24:0)+(rarity>=6?.16:0)+(state.location==='shore'?0:.15)-(aimQuality===2?.1:0)+(aimQuality===0?.15:0)};
     say(rarity>=4?'무거운 힘이 줄을 끌고 갑니다':'물고기가 거세게 저항합니다');playTone(520,.18,'triangle',.05);updateAction();
   }
   function fail(reason){
-    if(phase==='idle')return;phase='idle';holding=false;fight=null;clearTimeout(biteTimer);addRipple(.56,.675,2.6);playTone(190,.32,'sine',.055);
+    if(phase==='idle')return;phase='idle';ignoreClickUntil=performance.now()+320;holding=false;fight=null;clearTimeout(biteTimer);addRipple(.56,.675,2.6);playTone(190,.32,'sine',.055);
     say(reason);updateAction();renderWork();
   }
   function finishCatch(){
     if(phase!=='fight'||!fight)return;const s=fight.fish,size=Math.round((s.min+Math.random()*(s.max-s.min))*10)/10;
     const amount=1+(state.flags.hook?1:0)+(aimQuality===2?1:0)+(Math.random()<.15?1:0);state.fish+=amount;
-    const before=state.catches[s.id]||{count:0,best:0};state.catches[s.id]={count:(Number(before.count)||0)+1,best:Math.max(Number(before.best)||0,size)};
-    if(state.flags.boat&&Math.random()<.23)state.glass++;
-    phase='idle';holding=false;fight=null;addRipple(.56,.675,2.4);playTone(620,.18,'sine',.06);setTimeout(()=>playTone(840,.24,'sine',.05),110);
-    say(`${s.name} ${size.toFixed(1)}cm · 물고기 +${amount}`);if(!state.notes.includes('first'))remember('first');
+    const before=state.catches[s.id]||{count:0,best:0};state.catches[s.id]={count:(Number(before.count)||0)+1,best:Math.max(Number(before.best)||0,size)};state.siteCatches[state.location]=(state.siteCatches[state.location]||0)+1;
+    if(['houses','beacon'].includes(state.location))state.glass++;
+    else if(state.flags.boat&&Math.random()<.23)state.glass++;
+    phase='idle';ignoreClickUntil=performance.now()+320;holding=false;fight=null;addRipple(.56,.675,2.4);playTone(620,.18,'sine',.06);setTimeout(()=>playTone(840,.24,'sine',.05),110);
+    say(`${s.name} ${size.toFixed(1)}cm · 물고기 +${amount}`);const total=landings();
+    if(total===1)remember('first');if(total===2)remember('bench');if(total===4)remember('reeds');if(total===7)remember('trap');if(total===13)remember('roof');
+    const local=state.siteCatches[state.location];if(state.location==='channel'){if(local===1)remember('channelSignal');if(local===2)remember('channel')}
+    if(state.location==='houses'){if(local===1)remember('housesSignal');if(local===2)remember('houses')}
+    if(state.location==='beacon'){if(local===1)remember('beaconSignal');if(local===2)remember('beacon')}
+    if(state.location==='gate'){if(local===1)remember('gateSignal');if(local===2)remember('gate')}
     if(before.count===0&&['golden','moon'].includes(s.id))toast(`처음 만난 ${s.name}. 기록에 남겼습니다.`);
     save();render();
   }
   function updateAction(){
     const labels={idle:['↗',state.location==='shore'?'낚싯줄 던지기':'이곳에 낚싯줄 던지기','누르면 던질 지점이 나타납니다'],aiming:['◎','지금 던지기','움직이는 눈금이 밝은 구간에 올 때 누르세요'],waiting:['◌','물결을 보는 중','입질은 곧 옵니다'],bite:['↗','지금 챔질하기','짧은 순간을 놓치지 마세요'],fight:['◉','누르고 줄 감기','당기고 놓아 긴장도를 관리하세요']};
     const [icon,label,hint]=labels[phase];$('action-icon').textContent=icon;$('action-text').textContent=label;$('instruction').textContent=hint;
-    $('action').disabled=phase==='waiting';$('skill-ui').hidden=phase==='idle'||phase==='waiting';$('aim-ui').hidden=phase!=='aiming';$('bite-ui').hidden=phase!=='bite';$('fight-ui').hidden=phase!=='fight';
-    document.querySelector('.game').classList.toggle('fishing',phase==='bite');document.querySelector('.game').classList.toggle('fighting',phase==='fight');$('work-open').disabled=phase!=='idle';$('journal-open').disabled=phase!=='idle';renderWork();
+    $('action').disabled=phase==='waiting'||storyOpen;$('skill-ui').hidden=phase==='idle'||phase==='waiting';$('aim-ui').hidden=phase!=='aiming';$('bite-ui').hidden=phase!=='bite';$('fight-ui').hidden=phase!=='fight';
+    document.querySelector('.game').classList.toggle('fishing',phase==='bite');document.querySelector('.game').classList.toggle('fighting',phase==='fight');$('work-open').disabled=phase!=='idle'||storyOpen;$('journal-open').disabled=phase!=='idle'||storyOpen;renderWork();
   }
   const recipes=[
     {id:'barter',name:'물고기 교환',detail:'물가의 낡은 교환 상자',cost:{fish:6},gain:{wood:3,scrap:2},show:()=>true},
-    {id:'supply',name:'말린 물고기',detail:'건너편으로 가져갈 식량',cost:{fish:4},gain:{supply:2},show:()=>state.casts>=6},
-    {id:'hook',name:'쇠바늘 다듬기',detail:'낚시마다 물고기 +1',cost:{wood:3,scrap:4},flag:'hook',show:()=>state.casts>=4&&!state.flags.hook},
-    {id:'net',name:'통발 놓기',detail:'7초마다 물고기 +1',cost:{wood:8,scrap:6},flag:'net',show:()=>state.casts>=10&&!state.flags.net},
-    {id:'net2',name:'통발 손보기',detail:'7초마다 물고기 +2',cost:{wood:12,scrap:8},flag:'net2',show:()=>state.flags.net&&state.casts>=24&&!state.flags.net2},
-    {id:'boat',name:'낡은 배 고치기',detail:'호수 건너편으로',cost:{wood:12,scrap:10,supply:4},flag:'boat',show:()=>state.flags.net&&state.casts>=18&&!state.flags.boat},
-    {id:'lamp',name:'유리 등불',detail:'물 아래의 길을 비춥니다',cost:{glass:3,scrap:5},flag:'lamp',show:()=>state.flags.boat&&state.visits.houses>=2&&!state.flags.lamp}
+    {id:'supply',name:'말린 물고기',detail:'건너편으로 가져갈 식량',cost:{fish:4},gain:{supply:2},show:()=>landings()>=4},
+    {id:'hook',name:'쇠바늘 다듬기',detail:'낚시마다 물고기 +1',cost:{wood:3,scrap:4},flag:'hook',show:()=>landings()>=3&&!state.flags.hook},
+    {id:'net',name:'통발 놓기',detail:'7초마다 물고기 +1',cost:{wood:8,scrap:6},flag:'net',show:()=>landings()>=7&&state.flags.hook&&!state.flags.net},
+    {id:'net2',name:'통발 손보기',detail:'7초마다 물고기 +2',cost:{wood:12,scrap:8},flag:'net2',show:()=>state.flags.net&&landings()>=20&&!state.flags.net2},
+    {id:'boat',name:'낡은 배 고치기',detail:'호수 건너편으로',cost:{wood:12,scrap:10,supply:4},flag:'boat',show:()=>state.flags.net&&landings()>=13&&!state.flags.boat},
+    {id:'lamp',name:'유리 등불',detail:'물 아래의 길을 비춥니다',cost:{glass:3,scrap:5},flag:'lamp',show:()=>state.flags.boat&&state.siteCatches.houses>=2&&!state.flags.lamp}
   ];
   const resourceNames={fish:'물고기',wood:'나무',scrap:'고철',supply:'식량',glass:'유리'};
   function enough(cost){return Object.entries(cost).every(([k,v])=>state[k]>=v)}
@@ -100,44 +138,44 @@
   function costText(cost){return Object.entries(cost).map(([k,v])=>`${resourceNames[k]} ${v}`).join(' · ')}
   function craft(id){const r=recipes.find(x=>x.id===id);if(!r||!r.show()||!enough(r.cost)||phase!=='idle')return;spend(r.cost);if(r.flag)state.flags[r.flag]=true;if(id==='net')state.lastTick=Date.now();if(r.gain)for(const [k,v]of Object.entries(r.gain))state[k]+=v;
     const lines={barter:'교환 상자에 물고기를 두었다. 나무와 고철이 남았다.',supply:'생선을 말려 식량을 만들었다.',hook:'쇠바늘이 단단해졌다. 낚싯줄이 묵직하다.',net:'통발이 물속으로 가라앉았다. 물고기가 저절로 모이기 시작한다.',net2:'물길을 알게 된 통발이 더 많은 물고기를 모은다.',boat:'배가 물에 뜬다. 건너편 지붕이 보인다.',lamp:'등불 안쪽의 지도가 빛난다.'};say(`완료 · ${r.name}`);toast(lines[id]);
-    if(id==='boat')remember('channel');if(id==='lamp')remember('lamp');save();render();
+    if(id==='boat')remember('boat');if(id==='lamp')remember('lamp');save();render();
   }
   const places=[
     {id:'shore',name:'물가',detail:'익숙한 자리로 돌아가기',cost:{},show:()=>state.flags.boat&&state.location!=='shore'},
     {id:'channel',name:'갈대 수로',detail:'물길을 따라가 보기',cost:{supply:1},show:()=>state.flags.boat},
-    {id:'houses',name:'물에 잠긴 집',detail:'지붕 아래를 살펴보기',cost:{supply:2},show:()=>state.visits.channel>=2},
+    {id:'houses',name:'물에 잠긴 집',detail:'지붕 아래를 살펴보기',cost:{supply:2},show:()=>state.siteCatches.channel>=2},
     {id:'beacon',name:'꺼진 등대',detail:'빛이 닿지 않는 곳',cost:{supply:3,glass:1},show:()=>state.flags.lamp},
-    {id:'gate',name:'잠긴 수문',detail:'종소리가 시작된 곳',cost:{supply:4,glass:2},show:()=>state.visits.beacon>=2}
+    {id:'gate',name:'잠긴 수문',detail:'종소리가 시작된 곳',cost:{supply:4,glass:2},show:()=>state.siteCatches.beacon>=2}
   ];
   function travel(id){const p=places.find(x=>x.id===id);if(!p||!p.show()||!enough(p.cost)||phase!=='idle')return;spend(p.cost);if(id!=='shore')state.visits[id]++;state.location=id;
-    const n=state.visits[id];if(id==='shore')toast('물가에 돌아왔습니다.');if(id==='channel'){state.wood+=3;state.scrap+=2;toast(n===1?'갈대 사이에 오래된 노가 걸려 있다. 나무와 고철을 건졌다.':'물살이 가리키는 틈을 찾았다. 잠긴 지붕으로 이어진다.');if(n===2)remember('channel');}
-    if(id==='houses'){state.scrap+=4;state.glass+=2;toast(n===1?'식탁 위 유리컵이 아직 그대로다.':'열린 문마다 같은 방향으로 의자가 놓여 있다.');if(n===2)remember('houses');}
-    if(id==='beacon'){state.glass+=2;state.scrap+=2;toast(n===1?'등대에는 불을 켠 흔적이 없다. 그런데 유리는 따뜻하다.':'발밑에서 종소리가 났다. 물 아래에 길이 있다.');if(n===2)remember('beacon');}
-    if(id==='gate'){state.glass+=3;state.wood+=4;toast(n===1?'수문에는 자물쇠가 없다. 안쪽에서 잠긴 듯하다.':'물속에 가라앉은 것은 마을이 아니라, 마을이 지키던 무언가였다.');if(n===2){remember('gate');setTimeout(()=>remember('return'),3500)}}
+    const n=state.visits[id];if(id==='shore')toast('물가에 돌아왔습니다.');if(id==='channel'){state.wood+=3;state.scrap+=2;toast(n===1?'갈대 사이에 오래된 노가 걸려 있다. 나무와 고철을 건졌다.':'물살이 가리키는 틈을 찾았다. 잠긴 지붕으로 이어진다.');}
+    if(id==='houses'){state.scrap+=4;state.glass+=2;toast(n===1?'식탁 위 유리컵이 아직 그대로다.':'열린 문마다 같은 방향으로 의자가 놓여 있다.');}
+    if(id==='beacon'){state.glass+=2;state.scrap+=2;toast(n===1?'등대에는 불을 켠 흔적이 없다. 그런데 유리는 따뜻하다.':'발밑에서 종소리가 났다. 물 아래에 길이 있다.');}
+    if(id==='gate'){state.glass+=3;state.wood+=4;toast(n===1?'수문에는 자물쇠가 없다. 안쪽에서 잠긴 듯하다.':'물속에 가라앉은 것은 마을이 아니라, 마을이 지키던 무언가였다.');}
     $('status').textContent=`다녀온 곳 · ${p.name}`;addRipple(.56,.675,3);playTone(650,.25,'sine',.05);save();render();if(workOpen)closeWork();showTravel(p.name,p.detail);
   }
   function showTravel(title,subtitle){
     const el=$('travel-transition');$('travel-title').textContent=title;$('travel-subtitle').textContent=subtitle;
     el.hidden=false;clearTimeout(transitionTimer);transitionTimer=setTimeout(()=>{el.hidden=true},1050);
   }
-  function stage(){if(state.visits.gate>=2)return 5;if(state.visits.beacon>=2)return 4;if(state.flags.boat)return 3;if(state.flags.net)return 2;if(state.casts>=3)return 1;return 0}
+  function stage(){if(state.ending)return 5;if(state.siteCatches.beacon>=2)return 4;if(state.flags.boat)return 3;if(state.flags.net)return 2;if(landings()>=2)return 1;return 0}
   function render(){
     const st=stage(),titles=[['A QUIET PLACE TO STAY','오늘은, 물가에.','아무것도 서두르지 않아도 되는 시간.'],['THINGS THE WATER LEAVES','물가에 남은 것.','건져 올린 것들로 작은 도구를 만듭니다.'],['THE SHORE IS MOVING','물길이 바뀌었다.','통발은 일하고, 건너편 지붕은 가까워집니다.'],['BEYOND THE WATER','건너편으로.','낚시하던 호수에 오래된 길이 있습니다.'],['THE BELL BELOW','물 아래의 소리.','등대의 종소리는 어디에서 시작됐을까요.'],['STILLWATER','다시, 물가에.','모든 것을 알지 못해도, 호수는 계속 흐릅니다.']][st];
-    const views={channel:['THE REED CHANNEL','갈대 사이로.','물길이 호수 안쪽으로 접혀 들어갑니다.'],houses:['THE DROWNED HOUSES','잠긴 집들.','열린 문 뒤로 물빛이 지나갑니다.'],beacon:['THE DARK BEACON','꺼진 등대.','빛보다 먼저 종소리가 닿습니다.'],gate:['THE LOCKED GATE','잠긴 수문.','물 아래에 아직 끝나지 않은 이야기가 있습니다.']};const view=views[state.location]||titles;
+    const views={channel:['THE REED CHANNEL','갈대 사이로.','물길이 호수 안쪽으로 접혀 들어갑니다.'],houses:['THE DROWNED HOUSES','잠긴 집들.','열린 문 뒤로 물빛이 지나갑니다.'],beacon:['THE DARK BEACON','꺼진 등대.','빛보다 먼저 종소리가 닿습니다.'],gate:state.ending==='open'?['THE WATER RECEDED','드러난 마을.','이름들이 돌아온 자리에서 다시 물결을 봅니다.']:state.ending==='seal'?['THE NAMES BELOW','남겨 둔 호수.','오늘 건진 이름을 잊지 않기로 했습니다.']:['THE LOCKED GATE','잠긴 수문.','물 아래에 아직 끝나지 않은 이야기가 있습니다.']};const view=views[state.location]||titles;
     $('chapter-label').textContent=view[0];$('chapter-title').textContent=view[1];$('chapter-subtitle').textContent=view[2];$('place-label').textContent=state.location==='shore'?'해질녘의 호수':({channel:'갈대 수로',houses:'물에 잠긴 집',beacon:'꺼진 등대',gate:'잠긴 수문'}[state.location]);
     $('bottom-note').textContent=st>=3?'물길을 따라, 조금 더 멀리':'잠시 머무는 낚시';
     $('catch-count').textContent=`낚시 ${state.casts}회`;
-    $('work-open').hidden=state.casts<3;$('work-panel').hidden=state.casts<3;
+    $('work-open').hidden=landings()<2;$('work-panel').hidden=landings()<2;
     $('work-badge').textContent=state.flags.boat?'↗':state.flags.net?'•':'+';
     renderWork();renderJournal();updateAction();
   }
   function renderWork(){
-    const visible=['fish','wood','scrap','supply','glass'].filter(k=>!['supply','glass'].includes(k)||state[k]>0||state.casts>=6&&(k==='supply'||state.flags.boat));
+    const visible=['fish','wood','scrap','supply','glass'].filter(k=>!['supply','glass'].includes(k)||state[k]>0||landings()>=4&&(k==='supply'||state.flags.boat));
     $('resources').innerHTML=visible.map(k=>`<span class="resource">${resourceNames[k]} <strong>${state[k]}</strong></span>`).join('');
     $('work-intro').textContent=state.flags.net?'통발이 물고기를 모으고 있습니다.':'건져 올린 것을 쓸모 있게 만듭니다.';
-    $('work-actions').innerHTML=recipes.filter(r=>r.show()).map(r=>`<button class="work-action" type="button" data-work="${r.id}" ${enough(r.cost)&&phase==='idle'?'':'disabled'}><span><strong>${r.name}</strong><small>${r.detail}</small></span><span class="cost">${costText(r.cost)}</span></button>`).join('');
+    $('work-actions').innerHTML=recipes.filter(r=>r.show()).map(r=>`<button class="work-action" type="button" data-work="${r.id}" ${enough(r.cost)&&phase==='idle'&&!storyOpen?'':'disabled'}><span><strong>${r.name}</strong><small>${r.detail}</small></span><span class="cost">${costText(r.cost)}</span></button>`).join('');
     $('map-area').hidden=!state.flags.boat;
-    $('map-actions').innerHTML=state.flags.boat?places.filter(p=>p.show()).map(p=>`<button class="work-action" type="button" data-place="${p.id}" ${enough(p.cost)&&phase==='idle'?'':'disabled'}><span><strong>${p.name}</strong><small>${p.detail}${p.id==='shore'?'':` · ${state.visits[p.id]}회`}</small></span><span class="cost">${p.id==='shore'?'무료':costText(p.cost)}</span></button>`).join(''):'';
+    $('map-actions').innerHTML=state.flags.boat?places.filter(p=>p.show()).map(p=>`<button class="work-action" type="button" data-place="${p.id}" ${enough(p.cost)&&phase==='idle'&&!storyOpen?'':'disabled'}><span><strong>${p.name}</strong><small>${p.detail}${p.id==='shore'?'':` · ${state.visits[p.id]}회`}</small></span><span class="cost">${p.id==='shore'?'무료':costText(p.cost)}</span></button>`).join(''):'';
   }
   function renderJournal(){
     const total=Object.values(state.catches).reduce((n,r)=>n+(Number(r.count)||0),0),seen=species.filter(s=>state.catches[s.id]?.count).length;
@@ -145,7 +183,7 @@
     $('note-section').hidden=!state.notes.length;$('notes-list').innerHTML=state.notes.filter(id=>noteData[id]).map(id=>`<div class="note-item"><b>${noteData[id][0]}</b>${noteData[id][1]}</div>`).join('');
     $('species-list').innerHTML=species.map(s=>{const r=state.catches[s.id];return `<div class="species-row ${r?'':'locked'}"><div class="species-mark">${r?'◈':'?'}</div><div class="species-text"><strong>${r?s.name:'아직 만나지 못함'}</strong><small>${r?`최대 ${(Number(r.best)||0).toFixed(1)} cm · ${s.rarity}`:'호수 어딘가에 있습니다'}</small></div><span class="species-count">${r?`${r.count}마리`:''}</span></div>`}).join('');
   }
-  function openWork(){if(state.casts<3)return;workOpen=true;$('scrim').hidden=false;$('work-panel').classList.add('open');$('work-open').setAttribute('aria-expanded','true');$('work-close').focus()}
+  function openWork(){if(landings()<2)return;workOpen=true;$('scrim').hidden=false;$('work-panel').classList.add('open');$('work-open').setAttribute('aria-expanded','true');$('work-close').focus()}
   function closeWork(){workOpen=false;$('work-panel').classList.remove('open');$('work-open').setAttribute('aria-expanded','false');if(!journalOpen)$('scrim').hidden=true;$('work-open').focus()}
   function openJournal(){if(workOpen)closeWork();journalOpen=true;$('scrim').hidden=false;$('journal').classList.add('open');$('journal').setAttribute('aria-hidden','false');$('journal-close').focus()}
   function closeJournal(){journalOpen=false;$('journal').classList.remove('open');$('journal').setAttribute('aria-hidden','true');if(!workOpen)$('scrim').hidden=true;$('journal-open').focus()}
@@ -205,9 +243,15 @@
     }else if(loc==='gate'){
       ctx.fillStyle='#0b252ed1';ctx.fillRect(0,hy-h*.17,w,h*.57);
       ctx.fillStyle='#203a43';ctx.fillRect(w*.11,hy-h*.23,w*.78,h*.43);ctx.fillStyle='#142d37';ctx.fillRect(w*.14,hy-h*.19,w*.72,h*.36);
-      ctx.fillStyle='#081e28';ctx.beginPath();ctx.moveTo(w*.33,hy+h*.22);ctx.lineTo(w*.33,hy-h*.06);ctx.quadraticCurveTo(w*.5,hy-h*.2,w*.67,hy-h*.06);ctx.lineTo(w*.67,hy+h*.22);ctx.closePath();ctx.fill();
+      const open=state.ending==='open',sealed=state.ending==='seal';
+      if(open){
+        const passage=ctx.createLinearGradient(0,hy-h*.15,0,hy+h*.24);passage.addColorStop(0,'#e9d3a0');passage.addColorStop(1,'#6f7d70');ctx.fillStyle=passage;ctx.beginPath();ctx.moveTo(w*.34,hy+h*.22);ctx.lineTo(w*.34,hy-h*.06);ctx.quadraticCurveTo(w*.5,hy-h*.19,w*.66,hy-h*.06);ctx.lineTo(w*.66,hy+h*.22);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#384a46';ctx.beginPath();ctx.moveTo(w*.41,hy+h*.21);ctx.lineTo(w*.47,hy+h*.01);ctx.lineTo(w*.53,hy+h*.01);ctx.lineTo(w*.59,hy+h*.21);ctx.fill();
+        for(let i=0;i<5;i++){const x=w*(.42+i*.04);ctx.fillStyle='#344942';ctx.fillRect(x,hy-h*.035-(i%2)*h*.015,w*.026,h*.045);ctx.beginPath();ctx.moveTo(x-w*.004,hy-h*.035-(i%2)*h*.015);ctx.lineTo(x+w*.013,hy-h*.064-(i%2)*h*.015);ctx.lineTo(x+w*.03,hy-h*.035-(i%2)*h*.015);ctx.fill()}
+      }else{ctx.fillStyle='#081e28';ctx.beginPath();ctx.moveTo(w*.33,hy+h*.22);ctx.lineTo(w*.33,hy-h*.06);ctx.quadraticCurveTo(w*.5,hy-h*.2,w*.67,hy-h*.06);ctx.lineTo(w*.67,hy+h*.22);ctx.closePath();ctx.fill();}
       ctx.strokeStyle='#9db9af66';ctx.lineWidth=Math.max(2,w*.003);ctx.beginPath();ctx.arc(w*.5,hy+h*.065,Math.min(w*.17,h*.17),Math.PI,0);ctx.stroke();
-      const halo=ctx.createRadialGradient(w*.5,hy+h*.06,2,w*.5,hy+h*.06,w*.22);halo.addColorStop(0,'#87bfc063');halo.addColorStop(1,'#87bfc000');ctx.fillStyle=halo;ctx.fillRect(w*.2,hy-h*.24,w*.6,h*.6);
+      const halo=ctx.createRadialGradient(w*.5,hy+h*.06,2,w*.5,hy+h*.06,w*.22);halo.addColorStop(0,open?'#efda9977':sealed?'#87d5ce8c':'#87bfc063');halo.addColorStop(1,'#87bfc000');ctx.fillStyle=halo;ctx.fillRect(w*.2,hy-h*.24,w*.6,h*.6);
+      if(sealed){for(let i=0;i<11;i++){const x=w*(.39+(i%4)*.07),y=hy-h*.065+Math.floor(i/4)*h*.065+Math.sin(t*1.6+i)*h*.007;ctx.fillStyle='#b5e9d2';ctx.globalAlpha=.35+.35*Math.sin(t+i)**2;ctx.beginPath();ctx.arc(x,y,2.5+(i%3),0,7);ctx.fill()}ctx.globalAlpha=1;}
       for(let i=0;i<8;i++){ctx.strokeStyle='#a5d0c17a';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(w*(.24+i*.074),hy+h*.03);ctx.lineTo(w*(.24+i*.074),hy+h*.12);ctx.stroke()}
     }
     if(loc!=='gate')drawBoat(w,h,t);
@@ -273,19 +317,20 @@
     const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;
     if(phase==='aiming')$('aim-marker').style.left=`${aimPosition(now)*100}%`;
     if(phase==='bite'){
-      const remaining=Math.max(0,biteDeadline-now);$('bite-fill').style.width=`${Math.min(100,remaining/(state.location==='shore'?1290:1050)*100)}%`;
+      const remaining=Math.max(0,biteDeadline-now);$('bite-fill').style.width=`${Math.min(100,remaining/(state.location==='shore'?1550:1250)*100)}%`;
       if(remaining<=0)fail('입질을 놓쳤습니다 · 다시 던져보세요');
     }
     if(phase==='fight'&&fight){
-      const f=fight;if(now>=f.surgeAt){f.tension=Math.min(100,f.tension+(holding?19:7)*f.strength);f.surgeAt=now+1150+Math.random()*700;addRipple(.56,.675,1.8);playTone(260,.11,'triangle',.025)}
-      if(holding){f.progress=Math.min(100,f.progress+dt*(31-f.strength*5)*(1-f.tension/280));f.tension=Math.min(100,f.tension+dt*(35+f.strength*7));}
-      else{f.tension=Math.max(0,f.tension-dt*45);f.progress=Math.max(0,f.progress-dt*3.4)}
-      f.danger=f.tension>90?f.danger+dt:Math.max(0,f.danger-dt*1.2);
+      const f=fight;if(now>=f.surgeAt){f.tension=Math.min(100,f.tension+(holding?22:9)*f.strength);f.progress=Math.max(0,f.progress-2.5*f.strength);f.surgeAt=now+1150+Math.random()*600;addRipple(.56,.675,1.8);playTone(260,.11,'triangle',.025)}
+      if(holding){f.progress=Math.min(100,f.progress+dt*(60-f.strength*5)*(1-f.tension/320));f.tension=Math.min(100,f.tension+dt*(36+f.strength*8));f.slack=Math.max(0,f.slack-dt*2);}
+      else{f.tension=Math.max(0,f.tension-dt*62);f.progress=Math.max(0,f.progress-dt*(15+f.strength*3));f.slack=f.tension<12?f.slack+dt:Math.max(0,f.slack-dt*.5)}
+      f.danger=f.tension>89?f.danger+dt:Math.max(0,f.danger-dt*1.2);
       $('fight-fill').style.width=`${f.progress}%`;$('fight-percent').textContent=`${Math.floor(f.progress)}%`;
       $('tension-fill').style.width=`${f.tension}%`;$('tension-fill').classList.toggle('danger',f.tension>82);
-      $('tension-hint').textContent=f.tension>82?'줄이 끊어지기 직전입니다':f.surgeAt-now<390?'몸을 튑니다 · 잠시 놓으세요':'누르고 떼며 조절하세요';
-      if(f.danger>.43)fail('줄이 끊어졌습니다 · 힘을 나눠 쓰세요');
-      else if(now-f.start>21000)fail('물고기가 깊은 곳으로 달아났습니다');
+      $('tension-hint').textContent=f.tension>82?'줄이 끊어지기 직전입니다':f.tension<18?'줄이 느슨합니다 · 바로 감으세요':!holding?'줄이 빠르게 풀리고 있습니다':f.surgeAt-now<350?'몸을 튑니다 · 잠시 놓으세요':'누르고 떼며 조절하세요';
+      if(f.danger>.38)fail('줄이 끊어졌습니다 · 힘을 나눠 쓰세요');
+      else if(f.slack>.6)fail('줄이 느슨해져 물고기가 빠져나갔습니다');
+      else if(now-f.start>23000)fail('물고기가 깊은 곳으로 달아났습니다');
       else if(f.progress>=100)finishCatch();
     }
     if(now>nextRipple){addRipple(.56,.675,.55);nextRipple=now+950+Math.random()*800}
@@ -293,7 +338,7 @@
     drawScene(now);requestAnimationFrame(frame);
   }
   function netTick(){if(!state.flags.net)return;const elapsed=Math.max(0,Date.now()-state.lastTick),cycles=Math.min(260,Math.floor(elapsed/7000));if(!cycles)return;state.fish+=cycles*(state.flags.net2?2:1);state.lastTick+=cycles*7000;save();renderWork();}
-  $('action').addEventListener('click',()=>{if(suppressFightClick)return;if(phase==='idle')beginAim();else if(phase==='aiming')releaseAim();else if(phase==='bite')hook()});
+  $('action').addEventListener('click',()=>{if(suppressFightClick||performance.now()<ignoreClickUntil)return;if(phase==='idle')beginAim();else if(phase==='aiming')releaseAim();else if(phase==='bite')hook()});
   $('action').addEventListener('pointerdown',e=>{if(phase==='fight'){holding=true;suppressFightClick=true;$('action').setPointerCapture(e.pointerId);e.preventDefault()}});
   $('action').addEventListener('pointerup',()=>{holding=false;setTimeout(()=>suppressFightClick=false,0)});$('action').addEventListener('pointercancel',()=>{holding=false;suppressFightClick=false});
   window.addEventListener('pointerup',()=>holding=false);window.addEventListener('blur',()=>holding=false);
@@ -301,15 +346,15 @@
   $('map-actions').addEventListener('click',e=>{const b=e.target.closest('[data-place]');if(b)travel(b.dataset.place)});
   $('work-open').addEventListener('click',openWork);$('work-close').addEventListener('click',closeWork);
   $('journal-open').addEventListener('click',openJournal);$('journal-close').addEventListener('click',closeJournal);$('scrim').addEventListener('click',()=>{if(journalOpen)closeJournal();if(workOpen)closeWork()});
-  $('sound').addEventListener('click',toggleSound);
+  $('sound').addEventListener('click',toggleSound);$('story-actions').addEventListener('click',e=>{const b=e.target.closest('[data-story-choice]');if(b)closeStory(b.dataset.storyChoice)});
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(journalOpen)closeJournal();else if(workOpen)closeWork();return}
+    if(e.key==='Escape'){if(storyOpen){closeStory('continue');return}if(journalOpen)closeJournal();else if(workOpen)closeWork();return}
     if(e.code!=='Space')return;
     if(phase==='fight'){e.preventDefault();holding=true;return}
     if(e.repeat||['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)||workOpen||journalOpen)return;
-    if(document.activeElement?.id==='action')return;
+    if(document.activeElement?.id==='action'||storyOpen)return;
     e.preventDefault();if(phase==='idle')beginAim();else if(phase==='aiming')releaseAim();else if(phase==='bite')hook();
   });
   document.addEventListener('keyup',e=>{if(e.code==='Space')holding=false});
-  window.addEventListener('resize',resize);resize();render();netTick();setInterval(netTick,1000);requestAnimationFrame(frame);
+  window.addEventListener('resize',resize);resize();render();showNextStory();netTick();setInterval(netTick,1000);requestAnimationFrame(frame);
 })();
