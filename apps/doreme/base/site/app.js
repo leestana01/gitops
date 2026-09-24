@@ -65,7 +65,7 @@
     $('queue-count').textContent = `${state.queue.length}곡`;
     $('queue-list').innerHTML = state.queue.map((id, index) => {
       const track = byId.get(id); if (!track) return '';
-      return `<div class="queue-item ${index === state.index ? 'current' : ''}" data-index="${index}">${cover(track)}<div class="queue-item-content"><button type="button" data-action="jump"><strong>${escapeText(track.work)} · ${escapeText(track.movement)}</strong><small>${escapeText(track.english)}</small></button><a href="${escapeText(track.source)}" target="_blank" rel="noopener noreferrer" title="${escapeText(track.license)} · ${escapeText(track.attribution)}">음원 출처 · ${escapeText(track.license)} ↗</a></div><span>${index === state.index ? '♫' : String(index+1).padStart(2,'0')}</span></div>`;
+      return `<div class="queue-item ${index === state.index ? 'current' : ''}" data-index="${index}">${cover(track)}<div class="queue-item-content"><button type="button" data-action="jump"><strong>${escapeText(track.work)} · ${escapeText(track.movement)}</strong><small>${escapeText(track.english)}</small></button><a href="${escapeText(track.source)}" target="_blank" rel="noopener noreferrer" title="음원 출처 및 라이선스">${escapeText(track.license === 'CC BY 3.0' ? `${track.attribution} · ${track.license}` : `음원 출처 · ${track.license}`)} ↗</a></div><span>${index === state.index ? '♫' : String(index+1).padStart(2,'0')}</span></div>`;
     }).join('');
   }
   async function loadAndPlay(index) {
