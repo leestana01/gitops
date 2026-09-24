@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: doreme
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /apps/doreme
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/leestana01/gitops.git
+    targetRevision: main
+    path: apps/doreme/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: doreme
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

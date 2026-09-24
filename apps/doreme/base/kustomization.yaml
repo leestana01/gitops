@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - service.yaml
+configMapGenerator:
+  - name: doreme-site
+    files:
+      - site/index.html
+      - site/style.css
+      - site/app.js
+      - site/catalog.js
+generatorOptions:
+  labels:
+    app.kubernetes.io/name: doreme
