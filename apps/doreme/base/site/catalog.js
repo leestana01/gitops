@@ -1,4 +1,4 @@
-window.DOREME_TRACKS = [
+window.DOREMI_TRACKS = [
   {
     "id": "swan-2",
     "work": "백조의 호수",

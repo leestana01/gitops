@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#211c2b">
   <meta name="description" content="차이콥스키의 음악을 한곳에서. 작품을 탐색하고, 나만의 목록으로 편안하게 감상하세요.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <title>DOREME — 차이콥스키를 듣는 시간</title>
+  <title>DOREMI — 차이콥스키를 듣는 시간</title>
   <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin>
   <link rel="stylesheet" href="/style.css">
   <script defer src="/catalog.js"></script>
@@ -15,7 +15,7 @@
 <body>
   <div class="app-shell">
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="DOREME 처음으로"><span class="brand-mark">d<span>◒</span></span><span class="brand-word">DOREME<small>THE TCHAIKOVSKY COLLECTION</small></span></a>
+      <a class="brand" href="#top" aria-label="DOREMI 처음으로"><span class="brand-mark">d<span>◒</span></span><span class="brand-word">DOREMI<small>THE TCHAIKOVSKY COLLECTION</small></span></a>
       <nav class="header-nav" aria-label="주 메뉴"><a href="#discover">음악 둘러보기</a><a href="#about">컬렉션 소개</a></nav>
       <button class="header-favorite" id="favorite-shortcut" type="button"><span aria-hidden="true">♡</span> 내 보관함 <b id="favorite-count">0</b></button>
     </header>
@@ -53,7 +53,7 @@
 
       <section class="about-section" id="about"><div><p class="section-kicker">ABOUT THIS SPACE</p><h2>오래된 음악,<br><em>새로운 듣는 방식.</em></h2></div><div class="about-copy"><p>백조의 호수부터 비창 교향곡까지. 이 공간은 차이콥스키의 작품을 부담 없이 탐색하고, 좋아하는 곡을 다시 찾을 수 있도록 만들었습니다.</p><p>음원은 Wikimedia Commons에서 제공하는 공개 도메인 및 표시된 자유 라이선스 연주를 사용합니다. 각 곡의 출처는 재생 목록에서 확인할 수 있습니다.</p><a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_music_by_Pyotr_Ilyich_Tchaikovsky" target="_blank" rel="noopener noreferrer">음원 아카이브 보기 ↗</a></div></section>
     </main>
-    <footer class="site-footer"><span class="footer-brand">DOREME <span>♪</span></span><span>차이콥스키를 듣는 시간</span><span>MADE FOR LISTENING, NOT RUSHING.</span></footer>
+    <footer class="site-footer"><span class="footer-brand">DOREMI <span>♪</span></span><span>차이콥스키를 듣는 시간</span><span>MADE FOR LISTENING, NOT RUSHING.</span></footer>
   </div>
 
   <aside class="player" id="player" aria-label="음악 플레이어" hidden><div class="player-progress-top"><input id="seek" type="range" min="0" max="1000" value="0" aria-label="재생 위치"></div><div class="player-inner"><div class="now-playing"><div class="player-cover" aria-hidden="true">♪</div><div class="now-meta"><strong id="now-title">음악을 선택하세요</strong><span id="now-subtitle"></span></div><button class="icon-button player-heart" id="player-favorite" type="button" aria-label="즐겨찾기">♡</button></div><div class="transport"><button class="icon-button desktop-extra" id="shuffle" type="button" aria-label="셔플" title="셔플">⇄</button><button class="icon-button" id="previous" type="button" aria-label="이전 곡">⏮</button><button class="play-button" id="toggle-play" type="button" aria-label="재생 또는 일시정지">▶</button><button class="icon-button" id="next" type="button" aria-label="다음 곡">⏭</button><button class="icon-button desktop-extra" id="repeat" type="button" aria-label="반복 모드" title="반복 끔">↻</button></div><div class="player-tools"><span class="time-label" id="current-time">0:00</span><span class="time-label">/</span><span class="time-label" id="duration">0:00</span><label class="volume-control" title="음량"><span aria-hidden="true">◖))</span><input id="volume" type="range" min="0" max="100" value="80" aria-label="음량"></label><button class="tool-button" id="speed" type="button" title="재생 속도">1×</button><button class="tool-button" id="sleep" type="button" title="취침 타이머">☾</button><button class="tool-button queue-trigger" id="queue-toggle" type="button" aria-label="재생 대기열 열기" aria-expanded="false">☷</button></div></div><p class="player-message" id="player-message" role="status" hidden></p></aside>

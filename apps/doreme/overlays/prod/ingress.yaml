@@ -8,10 +8,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - doreme.klr.kr
-      secretName: doreme-klr-kr-tls
+        - doremi.klr.kr
+      secretName: doremi-klr-kr-tls
   rules:
-    - host: doreme.klr.kr
+    - host: doremi.klr.kr
       http:
         paths:
           - path: /

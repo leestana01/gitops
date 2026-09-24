@@ -1,10 +1,10 @@
 (() => {
   'use strict';
-  const tracks = window.DOREME_TRACKS || [];
+  const tracks = window.DOREMI_TRACKS || [];
   const byId = new Map(tracks.map(track => [track.id, track]));
   const $ = id => document.getElementById(id);
   const audio = $('audio');
-  const state = { filter: '전체', query: '', favorites: readStored('doreme:favorites', []), queue: [], index: -1, shuffle: false, repeat: 'off', sleepMinutes: 0, sleepTimer: null, messageTimer: null };
+  const state = { filter: '전체', query: '', favorites: readStored('doremi:favorites', []), queue: [], index: -1, shuffle: false, repeat: 'off', sleepMinutes: 0, sleepTimer: null, messageTimer: null };
   const moodLists = {
     calm: ['swan-2', 'piano-2', 'nutcracker-flowers', 'symphony-6-2', 'symphony-6-4'],
     bright: ['swan-waltz', 'swan-cygnets', 'nutcracker-fairy', 'swan-czardas', 'piano-3'],
@@ -57,7 +57,7 @@
     $('seek').value = duration ? Math.round(audio.currentTime / duration * 1000) : 0;
     $('seek').style.setProperty('--progress', `${duration ? audio.currentTime / duration * 100 : 0}%`);
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({title: `${track.work} · ${track.movement}`, artist: 'Pyotr Ilyich Tchaikovsky', album: 'DOREME'});
+      navigator.mediaSession.metadata = new MediaMetadata({title: `${track.work} · ${track.movement}`, artist: 'Pyotr Ilyich Tchaikovsky', album: 'DOREMI'});
       navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
     }
   }
@@ -93,7 +93,7 @@
     loadAndPlay(nextIndex);
   }
   function previous() { if (audio.currentTime > 3) { audio.currentTime = 0; return; } loadAndPlay(state.index > 0 ? state.index - 1 : state.queue.length - 1); }
-  function toggleFavorite(id) { if (!id) return; state.favorites = state.favorites.includes(id) ? state.favorites.filter(item => item !== id) : [...state.favorites,id]; save('doreme:favorites',state.favorites); render(); }
+  function toggleFavorite(id) { if (!id) return; state.favorites = state.favorites.includes(id) ? state.favorites.filter(item => item !== id) : [...state.favorites,id]; save('doremi:favorites',state.favorites); render(); }
   function shuffleQueue() { if (!state.queue.length) return; const now = current()?.id; const rest = state.queue.filter(id => id !== now); for (let i=rest.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [rest[i],rest[j]]=[rest[j],rest[i]]; } state.queue = [now,...rest]; state.index = 0; render(); }
   function setQueueOpen(open) { $('queue-panel').classList.toggle('open', open); $('queue-panel').setAttribute('aria-hidden', String(!open)); $('queue-backdrop').hidden = !open; $('queue-toggle').setAttribute('aria-expanded', String(open)); if (open) $('queue-close').focus(); else $('queue-toggle').focus(); }
   function cycleSleep() { const choices=[0,15,30,60]; state.sleepMinutes = choices[(choices.indexOf(state.sleepMinutes)+1)%choices.length]; clearTimeout(state.sleepTimer); if (state.sleepMinutes) { state.sleepTimer=setTimeout(() => { audio.pause(); state.sleepMinutes=0; updatePlayer(); message('취침 타이머가 끝나 재생을 멈췄습니다.'); },state.sleepMinutes*60000); message(`${state.sleepMinutes}분 뒤 재생을 멈춥니다.`); } else message('취침 타이머를 껐습니다.'); updatePlayer(); }
@@ -114,12 +114,12 @@
   $('speed').addEventListener('click',() => { const options=[1,1.25,1.5,0.75];audio.playbackRate=options[(options.indexOf(audio.playbackRate)+1)%options.length];updatePlayer(); });
   $('sleep').addEventListener('click',cycleSleep);
   $('seek').addEventListener('input',event => { if (Number.isFinite(audio.duration)) audio.currentTime=Number(event.target.value)/1000*audio.duration; });
-  $('volume').addEventListener('input',event => { audio.volume=Number(event.target.value)/100;save('doreme:volume',audio.volume); });
+  $('volume').addEventListener('input',event => { audio.volume=Number(event.target.value)/100;save('doremi:volume',audio.volume); });
   $('queue-toggle').addEventListener('click',() => setQueueOpen(true));$('queue-close').addEventListener('click',() => setQueueOpen(false));$('queue-backdrop').addEventListener('click',() => setQueueOpen(false));
   audio.addEventListener('timeupdate',updatePlayer);audio.addEventListener('loadedmetadata',updatePlayer);audio.addEventListener('play',render);audio.addEventListener('pause',render);audio.addEventListener('ended',() => next(true));
   audio.addEventListener('error',() => { if (audio.src) message('이 음원을 불러오지 못했습니다. 다른 곡을 선택하거나 잠시 후 다시 시도해주세요.'); });
   document.addEventListener('keydown',event => { if (event.key === 'Escape' && $('queue-panel').classList.contains('open')) setQueueOpen(false); if (['INPUT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName)) return; if (event.code === 'Space') { event.preventDefault();togglePlay(); } else if (event.key === 'ArrowRight' && current()) audio.currentTime=Math.min(audio.duration || 0,audio.currentTime+10); else if (event.key === 'ArrowLeft' && current()) audio.currentTime=Math.max(0,audio.currentTime-10); });
   if ('mediaSession' in navigator) { navigator.mediaSession.setActionHandler('play',() => audio.play());navigator.mediaSession.setActionHandler('pause',() => audio.pause());navigator.mediaSession.setActionHandler('previoustrack',previous);navigator.mediaSession.setActionHandler('nexttrack',() => next(false));navigator.mediaSession.setActionHandler('seekbackward',() => audio.currentTime=Math.max(0,audio.currentTime-10));navigator.mediaSession.setActionHandler('seekforward',() => audio.currentTime=Math.min(audio.duration || 0,audio.currentTime+10)); }
-  audio.volume=Math.max(0,Math.min(1,Number(readStored('doreme:volume',0.8)) || 0));$('volume').value=audio.volume*100;
+  audio.volume=Math.max(0,Math.min(1,Number(readStored('doremi:volume',0.8)) || 0));$('volume').value=audio.volume*100;
   render();
 })();
