@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shorts-factory
+  labels:
+    app: shorts-factory
+spec:
+  # 스케줄러·SQLite·FilmCraft 엔진 프로세스가 한 파드에 있다 — 항상 1개, 교체 시 겹치지 않게 Recreate.
+  # (SQLite 를 NFS(nolock) 위에서 쓰므로 동시에 두 파드가 같은 DB 를 열면 안 된다)
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: shorts-factory
+  template:
+    metadata:
+      labels:
+        app: shorts-factory
+    spec:
+      priorityClassName: service-standard
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        # NFS 는 fsGroup 을 적용하지 않는다 — 앱 서브디렉토리 소유자만 node(1000)로 맞춘다.
+        - name: init-data
+          image: busybox:1.36
+          command: ["sh", "-c", "chown 1000:1000 /data"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              subPathExpr: $(DATA_SUBPATH)
+          env:
+            - name: DATA_SUBPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: shorts-factory-config
+                  key: DATA_SUBPATH
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+      containers:
+        - name: shorts-factory
+          image: yny.ocir.io/axlgn2n9ijoa/shorts-factory/server
+          ports:
+            - containerPort: 8787
+              name: http
+          envFrom:
+            # 비시크릿 env (overlay 에서 생성).
+            - configMapRef:
+                name: shorts-factory-config
+            # 시크릿 env (네임스페이스별 수동 생성 — SF_ADMIN_PASSWORD, SF_SECRET_KEY, API 키).
+            # API 키는 웹(설정 → 연결)에서 넣어도 된다. 없으면 관리자 비밀번호가 생성되어 로그에 남는다.
+            - secretRef:
+                name: shorts-factory-secrets
+                optional: true
+          env:
+            - name: DATA_SUBPATH
+              valueFrom:
+                configMapKeyRef:
+                  name: shorts-factory-config
+                  key: DATA_SUBPATH
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8787"
+            - name: SF_DATA_DIR
+              value: /data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              subPathExpr: $(DATA_SUBPATH)
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            # 렌더링(FilmCraft)·QA(ffmpeg) 중에 CPU·메모리를 몰아서 쓴다. 평시엔 거의 유휴.
+            requests:
+              cpu: "250m"
+              memory: "768Mi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: 8787
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8787
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8787
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      # 서버가 SIGTERM 에서 엔진·DB 를 정리한다. 중단된 제작은 재기동 후 멈춘 단계부터 이어진다.
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: shorts-factory-data
+        - name: tmp
+          emptyDir:
+            sizeLimit: 4Gi
+      imagePullSecrets:
+        - name: ocir-secret

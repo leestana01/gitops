@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shorts-factory
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # 내부망(VPN) 전용 — jenkins / argocd-server 와 같은 대역.
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.10.0/24,10.0.100.0/24"
+    # 미디어 업로드(라이브러리)·편집기 저장(.fcproj)
+    nginx.ingress.kubernetes.io/proxy-body-size: "2g"
+    # 프리뷰 렌더·업로드처럼 오래 걸리는 요청
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - shorts.klr.kr
+      secretName: shorts-klr-kr-tls
+  rules:
+    - host: shorts.klr.kr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shorts-factory
+                port:
+                  number: 8787

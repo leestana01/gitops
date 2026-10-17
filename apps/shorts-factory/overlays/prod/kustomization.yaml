@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - ../../base
+  - configmap.yaml
+  - ingress.yaml
+namespace: shorts-factory
+images:
+  - name: yny.ocir.io/axlgn2n9ijoa/shorts-factory/server
+    newTag: prod-1

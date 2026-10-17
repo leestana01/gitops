@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shorts-factory-config
+data:
+  # 접속 주소 — 유튜브 OAuth 리디렉션도 <SF_PUBLIC_URL>/api/youtube/callback 으로 만든다.
+  SF_PUBLIC_URL: "https://shorts.klr.kr"
+  # 클라이언트 주소를 ingress 의 X-Forwarded-For 에서 읽는다 (로그인 시도 제한 기준).
+  SF_TRUST_PROXY: "1"
+  DATA_SUBPATH: "shorts-factory"
+  TZ: "Asia/Seoul"
