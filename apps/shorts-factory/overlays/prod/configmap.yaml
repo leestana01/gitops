@@ -9,3 +9,7 @@ data:
   SF_TRUST_PROXY: "1"
   DATA_SUBPATH: "shorts-factory"
   TZ: "Asia/Seoul"
+  # 완성 영상 버킷 (OCI Object Storage S3 호환 API). 액세스/시크릿 키는 shorts-factory-secrets 에 있다.
+  SF_OBJECT_STORE_ENDPOINT: "https://axlgn2n9ijoa.compat.objectstorage.ap-chuncheon-1.oraclecloud.com"
+  SF_OBJECT_STORE_REGION: "ap-chuncheon-1"
+  SF_OBJECT_STORE_BUCKET: "shorts-factory-media"
