@@ -8,4 +8,4 @@ resources:
 namespace: shorts-factory
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/shorts-factory/server
-    newTag: prod-27
+    newTag: prod-28
