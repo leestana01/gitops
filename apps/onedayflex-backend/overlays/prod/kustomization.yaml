@@ -8,7 +8,7 @@ resources:
 namespace: onedayflex
 images:
   - name: yny.ocir.io/axlgn2n9ijoa/onedayflex/back
-    newTag: prod-20261025-review-history-6d73437
+    newTag: prod-20261026-word-resume-ccc7796
 replicas:
   - name: onedayflex-back
     count: 2
